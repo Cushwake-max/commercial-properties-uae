@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/css/intlTelInput.css">
 </head>
 
@@ -367,7 +367,7 @@
                     <p class="kicker">Office for Rent &bull; Downtown Dubai</p>
                     <h2>Fully furnished office with 9 parking spaces in the heart of Downtown Dubai.</h2>
                 </div>
-                <button class="button primary brochure-trigger" type="button" aria-haspopup="dialog" aria-controls="brochure-modal">Download Brochure</button>
+                <a href="#lead-form" class="button primary">Enquire Now</a>
             </section>
         </main>
 
@@ -408,31 +408,6 @@
             </a>
         </div>
 
-        <div class="brochure-modal" id="brochure-modal" role="dialog" aria-modal="true" aria-labelledby="brochure-modal-title" hidden>
-            <div class="brochure-modal-panel">
-                <button class="brochure-modal-close" type="button" aria-label="Close brochure form">&times;</button>
-                <p class="kicker">Download Brochure</p>
-                <h2 id="brochure-modal-title">Get the Boulevard Plaza Tower 1 brochure.</h2>
-                <form id="brochureDownloadForm" class="lead-form brochure-form" action="https://formspree.io/f/mgojdjoo" method="POST">
-                    <input type="hidden" name="_subject" value="New Boulevard Plaza Tower 1 brochure download">
-                    <input type="hidden" name="enquiry_type" value="Boulevard Plaza Tower 1 – Brochure download">
-                    <label>
-                        Full Name
-                        <input type="text" id="brochure-name" name="name" placeholder="John Doe" required>
-                    </label>
-                    <label>
-                        Mobile Number
-                        <input type="tel" id="brochure-mobile" name="mobile" required>
-                    </label>
-                    <label>
-                        Email Address
-                        <input type="email" id="brochure-email" name="email" placeholder="name@company.com" required>
-                    </label>
-                    <p class="form-error" id="brochureFormError" role="alert" hidden></p>
-                    <button class="button submit" type="submit">Download Brochure</button>
-                </form>
-            </div>
-        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/intlTelInput.min.js"></script>
