@@ -19,3 +19,4 @@
 .site-footer p a:hover{color:#ffffffb8}
 .consent-note a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .consent-note a:hover{color:var(--indigo)}
+.final-cta-qr{background:#fff;border:1px solid #1d174021;border-radius:14px;padding:10px;width:150px;height:150px;flex-shrink:0;box-shadow:0 10px 30px #1d174014}
