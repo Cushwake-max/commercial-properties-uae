@@ -57,9 +57,17 @@
         // Global Event Tracking (Clicks and Submissions)
         document.addEventListener('DOMContentLoaded', function() {
             document.addEventListener('click', function(e) {
+                var propName = (typeof PROPERTY_CONFIG !== 'undefined' && PROPERTY_CONFIG.propertyName) || document.title;
+                
+                // Track brochure triggers (button or link)
+                var brochureBtn = e.target.closest('.brochure-trigger');
+                if (brochureBtn) {
+                    posthog.capture('brochure_trigger_clicked', { property_name: propName });
+                    return;
+                }
+
                 var target = e.target.closest('a');
                 if (target && target.href) {
-                    var propName = (typeof PROPERTY_CONFIG !== 'undefined' && PROPERTY_CONFIG.propertyName) || document.title;
                     if (target.href.indexOf('wa.me') !== -1 || target.classList.contains('whatsapp-link')) {
                         posthog.capture('whatsapp_clicked', { property_name: propName, target_url: target.href });
                     } else if (target.href.indexOf('tel:') !== -1) {
