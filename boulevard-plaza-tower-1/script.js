@@ -163,6 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!response.ok) throw new Error('Submission failed');
 
+                if (typeof posthog !== 'undefined') {
+                    posthog.capture('lead_submitted', {
+                        property_name: PROPERTY_CONFIG.propertyName,
+                        form_type: 'enquiry_card'
+                    });
+                }
+
                 // Success state (preserves the existing on-page "received" card)
                 leadCard.innerHTML = `
                     <div class="success-card">
@@ -260,6 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) throw new Error('Submission failed');
+
+            if (typeof posthog !== 'undefined') {
+                posthog.capture('lead_submitted', {
+                    property_name: PROPERTY_CONFIG.propertyName,
+                    form_type: 'brochure_download'
+                });
+            }
 
             window.open(brochureUrl, '_blank', 'noopener');
             brochureForm.reset();

@@ -162,6 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
+                    if (typeof posthog !== 'undefined') {
+                        posthog.capture('lead_submitted', {
+                            property_name: 'AHS Tower',
+                            form_type: 'enquiry_card'
+                        });
+                    }
                     showSuccess();
                 } else {
                     let message = 'Something went wrong. Please try again, or reach us on WhatsApp.';
