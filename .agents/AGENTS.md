@@ -1,4 +1,4 @@
-﻿# Project Memory — Commercial Properties UAE
+# Project Memory — Commercial Properties UAE
 
 This file is a persistent memory document for AI agents working on this project.
 Read this before making any changes so you understand the current state of the project.
@@ -104,11 +104,20 @@ Copies exist at:
 ## Deployment Workflow
 
 1. Make changes locally
-2. `git add . && git commit -m "description"`
+2. `git add .; git commit -m "description"`
 3. `git push origin main`
 4. GitHub Pages auto-deploys within ~1 minute
 
-**Git credential account**: `mujtaba695-afk` (must have write access to Cushwake-max org repo)
+### Git Account for Agents
+
+**Preferred account for AI agents**: `cushwake-marketing`  
+This is a shared org account that already has write access to the `Cushwake-max` org repository.  
+**Before pushing, check if `cushwake-marketing` credentials are available on the machine.**  
+If `git push` returns a `403 Permission denied` error, it means the wrong account is cached in Windows Credential Manager. In that case:
+- Ask the user to run `git push` manually from their own terminal, OR
+- Ask the user to update the stored credential to use `cushwake-marketing`
+
+**Fallback personal account**: `mujtaba695-afk` — This is the user's personal account and must be explicitly invited to the repo if the org account is unavailable.
 
 ---
 
