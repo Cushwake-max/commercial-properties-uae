@@ -1,4 +1,48 @@
 // ====================================================================
+// Google Ads click attribution capture (gclid + keyword/UTM -> lead)
+// Reads ad-click params from the URL, persists them across the session,
+// and injects them as hidden fields into every form so they submit
+// with each lead (visible in the lead email; gclid enables exact
+// keyword lookup via the Google Ads API). Invisible to the visitor.
+// ====================================================================
+(function () {
+    var KEYS = ['gclid', 'wbraid', 'gbraid', 'utm_source', 'utm_medium',
+        'utm_campaign', 'utm_content', 'utm_term', 'matchtype'];
+    var params = new URLSearchParams(window.location.search);
+    KEYS.forEach(function (k) {
+        var v = params.get(k);
+        if (v) { try { localStorage.setItem('ad_' + k, v); } catch (e) {} }
+    });
+    function adValues() {
+        var out = {};
+        KEYS.forEach(function (k) {
+            var v = params.get(k);
+            if (!v) { try { v = localStorage.getItem('ad_' + k); } catch (e) {} }
+            if (v) out[k] = v;
+        });
+        return out;
+    }
+    function injectInto(form) {
+        if (!form) return;
+        var vals = adValues();
+        Object.keys(vals).forEach(function (k) {
+            var existing = form.querySelector('input[name="' + k + '"]');
+            if (existing) { existing.value = vals[k]; return; }
+            var input = document.createElement('input');
+            input.type = 'hidden'; input.name = k; input.value = vals[k];
+            form.appendChild(input);
+        });
+    }
+    function injectAll() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) injectInto(forms[i]);
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectAll);
+    } else { injectAll(); }
+})();
+
+// ====================================================================
 // CW CORE LANDING PAGE TEMPLATE — script.js
 // Only edit the CONFIG block below. Everything else is shared behavior
 // and must stay identical across all property landing pages.
