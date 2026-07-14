@@ -116,6 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     // 4. Form Submit Handler (Capturing Leads -> Formspree)
     // ----------------------------------------------------
+    // Google Ads conversion (fires only on confirmed Formspree success).
+    // Enhanced conversions: email/phone are hashed by Google before transmission.
+    function fireGoogleLeadConversion(email, phone) {
+        if (typeof gtag !== 'function') return;
+        gtag('set', 'user_data', {
+            email: email || undefined,
+            phone_number: phone || undefined
+        });
+        gtag('event', 'conversion', {
+            send_to: 'AW-17944022933/kWTzCMDtndAcEJWfsOxC'
+        });
+    }
+
     const leadForm = document.getElementById('leadCaptureForm');
     const leadCard = document.querySelector('.lead-card');
     const leadFormError = document.getElementById('leadFormError');
@@ -169,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         form_type: 'enquiry_card'
                     });
                 }
+
+                fireGoogleLeadConversion(formData.get('email'), phone);
 
                 // Success state (preserves the existing on-page "received" card)
                 leadCard.innerHTML = `
@@ -274,6 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     form_type: 'brochure_download'
                 });
             }
+
+            fireGoogleLeadConversion(formData.get('email'), phone);
 
             window.open(brochureUrl, '_blank', 'noopener');
             brochureForm.reset();
