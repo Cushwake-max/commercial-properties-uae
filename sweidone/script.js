@@ -188,6 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Lead', { content_name: 'Sweid One', content_category: 'enquiry_card' });
+                }
+
                 // Success state (preserves the existing on-page "received" card)
                 leadCard.innerHTML = `
                     <div class="success-card">
@@ -291,6 +295,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     property_name: 'Sweid One',
                     form_type: 'brochure_download'
                 });
+            }
+
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead', { content_name: 'Sweid One', content_category: 'brochure_download' });
             }
 
             window.open(brochureUrl, '_blank', 'noopener');
