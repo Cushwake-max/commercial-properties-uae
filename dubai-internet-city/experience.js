@@ -1,45 +1,5 @@
-// ====================================================================
-// Google Ads click attribution capture (gclid + keyword/UTM -> lead)
-// Reads ad-click params from the URL, persists them across the session,
-// and injects them as hidden fields into every form so they submit
-// with each lead. Invisible to the visitor.
-// ====================================================================
-(function () {
-    var KEYS = ['gclid', 'wbraid', 'gbraid', 'utm_source', 'utm_medium',
-        'utm_campaign', 'utm_content', 'utm_term', 'matchtype'];
-    var params = new URLSearchParams(window.location.search);
-    KEYS.forEach(function (k) {
-        var v = params.get(k);
-        if (v) { try { localStorage.setItem('ad_' + k, v); } catch (e) {} }
-    });
-    function adValues() {
-        var out = {};
-        KEYS.forEach(function (k) {
-            var v = params.get(k);
-            if (!v) { try { v = localStorage.getItem('ad_' + k); } catch (e) {} }
-            if (v) out[k] = v;
-        });
-        return out;
-    }
-    function injectInto(form) {
-        if (!form) return;
-        var vals = adValues();
-        Object.keys(vals).forEach(function (k) {
-            var existing = form.querySelector('input[name="' + k + '"]');
-            if (existing) { existing.value = vals[k]; return; }
-            var input = document.createElement('input');
-            input.type = 'hidden'; input.name = k; input.value = vals[k];
-            form.appendChild(input);
-        });
-    }
-    function injectAll() {
-        var forms = document.querySelectorAll('form');
-        for (var i = 0; i < forms.length; i++) injectInto(forms[i]);
-    }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', injectAll);
-    } else { injectAll(); }
-})();
+// Attribution, identity and engagement tracking live in
+// attribution.js (loaded first). It exposes window.CWC.
 
 const EXPERIENCES = {
     rent: {
@@ -199,6 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!form.checkValidity()) {
             form.reportValidity();
+            const bad = form.querySelector(':invalid');
+            window.CWC && CWC.track('form_validation_error', {
+                error_field: bad ? bad.name : 'unknown',
+                error_type: 'required_or_format'
+            });
             return;
         }
 
@@ -207,6 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!phoneInput.isValidNumber()) {
                 showError('Please enter a valid contact number, including the country code.');
                 mobileInput?.focus();
+                window.CWC && CWC.track('form_validation_error', {
+                    error_field: 'mobile',
+                    error_type: 'invalid_phone'
+                });
                 return;
             }
             phone = phoneInput.getNumber();
@@ -223,6 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending…';
         }
+
+        const leadCode = window.CWC ? CWC.newLeadCode() : '';
+        if (window.CWC) CWC.injectInto(form, { lead_code: leadCode });
 
         const formData = new FormData(form);
         formData.set('mobile', phone);
@@ -248,14 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     send_to: 'AW-17944022933/kWTzCMDtndAcEJWfsOxC'
                 });
             }
-            // PostHog lead event (tagged with rent/sale intent)
-            if (typeof posthog !== 'undefined') {
-                posthog.capture('lead_submitted', {
-                    property_name: 'Dubai Internet City',
-                    intent: currentIntent,
-                    gclid: (function(){ try { return localStorage.getItem('ad_gclid') || ''; } catch (e) { return ''; } })()
-                });
-            }
+            // PostHog lead event (full attribution snapshot attached)
+            window.CWC && CWC.track('form_submitted', {
+                lead_code: leadCode,
+                timeline: formData.get('preferred_timeline')
+                    || formData.get('preferred_move_in') || '',
+                has_company: !!formData.get('company')
+            });
             // Meta Pixel lead event
             if (typeof fbq === 'function') {
                 fbq('track', 'Lead', { content_name: 'Dubai Internet City', content_category: currentIntent });
@@ -274,7 +245,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
             }
-        } catch {
+        } catch (err) {
+            window.CWC && CWC.track('form_submission_failed', {
+                lead_code: leadCode,
+                failure_reason: (err && err.message) || 'network_error'
+            });
             showError('Sorry, your enquiry could not be sent. Please try again or contact us by phone or WhatsApp.');
             if (submitButton) {
                 submitButton.disabled = false;
