@@ -139,3 +139,32 @@ body[data-intent="sale"] .hero-copy h1 {
         display: none;
     }
 }
+
+/* Advertising-permit QR in the footer — white card for contrast/scannability
+   against the dark footer; fixed dimensions + lazy-load = no layout shift. */
+.footer-permit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.footer-permit img {
+    display: block;
+    width: 132px;
+    height: 132px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 10px 30px rgba(29, 23, 64, .28);
+}
+
+.footer-permit span {
+    max-width: 148px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, .55);
+}
