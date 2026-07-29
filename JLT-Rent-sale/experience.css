@@ -131,3 +131,11 @@ body[data-intent="sale"] .hero-copy h1 {
     }
 
 }
+
+/* Narrow phones (<=400px): keep the top partner bar to the brand only
+   so its text never clips inside the fixed-height strip. */
+@media (max-width: 400px) {
+    .partner-bar > span {
+        display: none;
+    }
+}
