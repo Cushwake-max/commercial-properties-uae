@@ -1,0 +1,133 @@
+.lead-list > li > i {
+    width: 22px;
+    margin-top: 3px;
+    color: #fff;
+    font-size: 17px;
+    text-align: center;
+}
+
+.lead-card-header > span i,
+.mini-location > i {
+    font-size: 16px;
+}
+
+.intent-summary {
+    width: min(100% - 40px, 1180px);
+    margin-inline: auto;
+    padding: clamp(64px, 8vw, 104px) 0;
+}
+
+.intent-summary-heading {
+    max-width: 760px;
+    margin: 0 auto 42px;
+    text-align: center;
+}
+
+.intent-summary-heading h2,
+.intent-feature-copy h2 {
+    margin: 0 0 18px;
+    color: var(--indigo);
+    font-size: clamp(30px, 4vw, 50px);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.025em;
+}
+
+.intent-summary-heading > p:last-child,
+.intent-feature-copy > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.advantage-grid article {
+    min-height: 220px;
+    padding: 30px;
+    border: 1px solid #dedbe8;
+    background: #fff;
+}
+
+.advantage-grid i {
+    margin-bottom: 34px;
+    color: var(--red);
+    font-size: 25px;
+}
+
+.advantage-grid h3 {
+    margin: 0 0 12px;
+    color: var(--indigo);
+    font-size: 17px;
+}
+
+.advantage-grid p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+body[data-intent="sale"] .intent-hero .hero-bg::after {
+    background: linear-gradient(90deg, rgba(21, 16, 53, .92), rgba(21, 16, 53, .54));
+}
+
+body[data-intent="sale"] .hero-copy h1 {
+    font-size: clamp(52px, 7vw, 78px);
+}
+
+.lead-card h2 {
+    color: var(--indigo);
+}
+
+@media (max-width: 900px) {
+    .advantage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .advantage-grid article {
+        min-height: 0;
+    }
+
+}
+
+@media (max-width: 680px) {
+    .footer-contact a,
+    .footer-social a {
+        min-height: 44px;
+    }
+
+    .footer-social a {
+        min-width: 44px;
+    }
+
+    .consent-note a,
+    .site-footer > p a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+    }
+
+    .intent-summary {
+        width: min(100% - 32px, 1180px);
+        padding: 52px 0;
+    }
+
+    .intent-summary-heading {
+        text-align: left;
+    }
+
+    .advantage-grid article {
+        padding: 24px;
+    }
+
+    .advantage-grid i {
+        margin-bottom: 24px;
+    }
+
+}

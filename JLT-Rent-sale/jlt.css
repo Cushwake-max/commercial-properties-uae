@@ -1,0 +1,51 @@
+/* JLT area campaign additions layered over the CW master theme. */
+.brand-mark{text-decoration:none}
+.hero-copy strong{color:#fff}
+.lead-list li{align-items:start}
+.lead-list li p{color:#ffffffad;margin:4px 0 0;font-size:11px;font-weight:500;line-height:1.45}
+.offer-card>span i,.spec-card>span i{font-size:18px}
+.offer-card p strong{color:var(--indigo)}
+.area-intro{width:min(100% - 40px,1180px);margin-inline:auto;padding:clamp(60px,8vw,100px) 0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:clamp(32px,7vw,90px);align-items:center}
+.area-intro-copy{max-width:700px}
+.area-intro-copy h2,.video-copy h2{color:var(--indigo);margin:0 0 18px;font-size:clamp(30px,4vw,50px);font-weight:800;line-height:1.08;letter-spacing:-.025em}
+.area-intro-copy>p:last-child,.video-copy>p{color:var(--muted);margin:0;font-size:16px;line-height:1.7}
+.area-intro-copy strong{color:var(--indigo)}
+.search-intent-panel{background:var(--indigo);color:#fff;padding:clamp(26px,4vw,40px);box-shadow:0 24px 70px #1d17401f}
+.search-intent-panel>span{display:block;color:#ffffff8a;text-transform:uppercase;letter-spacing:.08em;font-size:11px;font-weight:800;margin-bottom:18px}
+.search-intent-panel h3{color:#fff;margin:0 0 20px;font-size:clamp(24px,3vw,34px);line-height:1.1}.search-intent-panel ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}
+.search-intent-panel li{border:1px solid #ffffff29;background:#ffffff0a;padding:14px 12px;font-size:12px;font-weight:700;line-height:1.35;text-align:center}
+.video-section{background:var(--indigo);color:#fff;padding:clamp(60px,8vw,100px) clamp(18px,4vw,58px);display:grid;grid-template-columns:minmax(0,680px) minmax(320px,428px);gap:clamp(36px,6vw,80px);align-items:center;justify-content:center}
+.video-copy{justify-self:stretch;align-self:center;max-width:680px}
+.video-copy h2{color:#fff}
+.video-copy>p{color:#ffffffb8;margin-bottom:24px}.video-usp-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 26px;padding:0;list-style:none}.video-usp-list li{border:1px solid #ffffff24;background:#ffffff0b;padding:15px;display:grid;gap:7px}.video-usp-list strong{color:#fff;font-size:13px;line-height:1.3}.video-usp-list span{color:#ffffffa8;font-size:11px;line-height:1.5}
+.video-copy .button{background:#fff;color:var(--indigo)}
+.video-frame{justify-self:start;width:min(100%,428px);display:grid;gap:12px}
+.video-frame video{display:block;width:100%;height:auto;background:transparent;box-shadow:0 35px 100px #0006}
+.video-note{color:#ffffff9c;margin:0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:600}
+.compact-specs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.footer-contact{display:grid;gap:8px}
+.footer-contact a{color:#fff;text-decoration:none;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px}
+.footer-contact a:hover{text-decoration:underline;text-underline-offset:3px}
+.button:focus-visible,.site-nav a:focus-visible,.header-action:focus-visible,.sticky-actions a:focus-visible,.footer-contact a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.lead-form input:focus-visible,.lead-form select:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+
+@media (max-width:980px){
+    .area-intro,.video-section{grid-template-columns:1fr}
+    .video-copy{justify-self:start}
+    .video-frame{justify-self:center}
+    .compact-specs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+@media (max-width:680px){
+    .area-intro{width:min(100% - 32px,1180px);padding:48px 0}
+    .video-section{padding:48px 16px}
+    .video-frame{width:min(100%,428px)}
+    .compact-specs{grid-template-columns:1fr}
+    .footer-contact a{font-size:13px}
+    .video-usp-list{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
