@@ -54,34 +54,10 @@
             person_profiles: 'identified_only',
         });
 
-        // Global Event Tracking (Clicks and Submissions)
-        document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('click', function(e) {
-                var propName = (typeof PROPERTY_CONFIG !== 'undefined' && PROPERTY_CONFIG.propertyName) || document.title;
-                
-                // Track brochure triggers (button or link)
-                var brochureBtn = e.target.closest('.brochure-trigger');
-                if (brochureBtn) {
-                    posthog.capture('brochure_trigger_clicked', { property_name: propName });
-                    return;
-                }
-
-                var target = e.target.closest('a');
-                if (target && target.href) {
-                    if (target.href.indexOf('wa.me') !== -1 || target.classList.contains('whatsapp-link')) {
-                        posthog.capture('whatsapp_clicked', { property_name: propName, target_url: target.href });
-                    } else if (target.href.indexOf('tel:') !== -1) {
-                        posthog.capture('phone_clicked', { property_name: propName, phone_number: target.href.replace('tel:', '') });
-                    } else if (target.getAttribute('href') === '#lead-form') {
-                        posthog.capture('enquire_button_clicked', { property_name: propName });
-                    }
-                }
-            });
-        });
     </script>
 </head>
 
-<body>
+<body data-area="Hub" data-intent="none">
     <div class="wrap">
         <p class="kicker">Cushman &amp; Wakefield Core</p>
         <h1>Commercial Properties in the UAE</h1>
@@ -98,6 +74,10 @@
             <a class="cta" href="/city-tower/">City Tower &rarr;</a>
         </div>
     </div>
+    <!-- Captures first touch here so campaign data survives the click
+         through to an area page. Without this, a visitor who lands on the
+         hub from an ad reaches the area page with no attribution. -->
+    <script src="attribution.js"></script>
 </body>
 
 </html>
