@@ -78,7 +78,42 @@ const EXPERIENCES = {
 
 const params = new URLSearchParams(window.location.search);
 const requestedIntent = params.get('intent');
-const currentIntent = requestedIntent === 'sale' ? 'sale' : 'rent';
+
+// Sale searches land here too, and until now they all saw the rent page.
+// PostHog, paid traffic 5 Aug - 9 Sep 2026: three Business Bay sessions from
+// explicit sale queries were served rent copy. No serving ad or sitelink URL
+// on either live campaign carries ?intent=sale - verified 9 Sep, count zero.
+//
+// Both live campaigns append utm_term={keyword} to every ad URL, so when no
+// explicit ?intent is present we can read the matched keyword and serve the
+// right experience instead of defaulting to rent. An explicit ?intent always
+// wins - this is only a fallback.
+//
+// Validated against all 60 enabled keywords on the two live campaigns:
+// 10 sale keywords match, 50 rent keywords do not, and none of the three
+// queries that have ever converted is affected. Note "direct from owner"
+// stays on rent - "own" is deliberately not in the pattern.
+const SALE_INTENT = /(for sale|to buy|\bbuy|purchase|freehold|invest)/i;
+const matchedKeyword = params.get('utm_term') || '';
+
+let currentIntent = 'rent';
+let intentSource = 'default';
+
+if (requestedIntent === 'sale' || requestedIntent === 'rent') {
+    currentIntent = requestedIntent;
+    intentSource = 'url_param';
+} else if (SALE_INTENT.test(matchedKeyword)) {
+    currentIntent = 'sale';
+    intentSource = 'keyword_inferred';
+}
+
+// Exposed so tracking can report which route decided the experience.
+window.CWC_INTENT = {
+    intent: currentIntent,
+    source: intentSource,
+    matched_keyword: matchedKeyword
+};
+
 const content = EXPERIENCES[currentIntent];
 
 document.documentElement.dataset.intent = currentIntent;
