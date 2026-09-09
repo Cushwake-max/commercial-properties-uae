@@ -168,3 +168,40 @@ body[data-intent="sale"] .hero-copy h1 {
     line-height: 1.4;
     color: rgba(255, 255, 255, .55);
 }
+
+/* ---------------------------------------------------------------------------
+   Mobile: lift the enquiry form above the supporting copy.
+
+   Desktop already gets the form in the first viewport free — it is the
+   right-hand column of .hero-grid. On mobile the grid stacks, so the form
+   lands at ~942px, about 1.16 screens down, behind the H1, the hero text and
+   three benefit cards.
+
+   PostHog paid traffic, 5 Aug - 9 Sep 2026:
+     desktop  119/125 sessions saw the form (95%),  4 submissions from 125
+     mobile   126/219 sessions saw the form (58%),  3 submissions from 219
+     119 of 219 mobile sessions never scrolled past 25%; median time to reach
+     25% on mobile (~5s) is close to the median mobile session (6-7s).
+
+   display:contents dissolves .hero-copy's box on mobile only, so its children
+   can be ordered individually against .lead-card without touching the HTML.
+   Order becomes: kicker, H1, FORM, hero text, benefit cards — the headline
+   still gives context and carries the keyword relevance signal.
+--------------------------------------------------------------------------- */
+@media (max-width: 980px) {
+    .hero-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .hero-copy {
+        display: contents;
+    }
+
+    .hero-copy > .kicker  { order: 1; margin-bottom: 0; }
+    .hero-copy > h1       { order: 2; }
+    .lead-card            { order: 3; }
+    .hero-copy > .hero-text { order: 4; margin-top: 0; }
+    .hero-copy > .lead-list { order: 5; margin-top: 0; }
+}
