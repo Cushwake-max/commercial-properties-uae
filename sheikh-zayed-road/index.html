@@ -71,6 +71,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -568,6 +569,7 @@
 
 
 
+
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
                     <p class="kicker" data-copy="sectionKicker">Sheikh Zayed Road Leasing Advantages</p>
@@ -761,6 +763,7 @@
 
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -830,7 +833,14 @@
         // F2: building equality does not identify the submitting interaction.
         // Each modal opening gets a token; only that opening may be replaced
         // by its own response.
-        var openToken = 0, pendingToken = null;
+        var openToken = 0;
+        // F2-R1: an unresolved submission belongs to the ENQUIRY, not to the
+        // modal opening. Closing and reopening the same building must not hand
+        // back a Send button while its first request is still unaccounted for.
+        var unresolved = {};   // building -> { lead_code, reason }
+        var UNKNOWN_MSG = 'We have not been able to confirm this enquiry. We may ' +
+          'already have it - please call +971 4 245 2100 or use WhatsApp rather ' +
+          'than sending again.';
 
         var AREA = 'Sheikh Zayed Road';
         // F3: reuse the page's own intl-tel-input so the modal validates and
@@ -873,10 +883,17 @@
             ' enquiry - ' + building;
           form.hidden = false; head.hidden = false;
           doneEl.hidden = true; errEl.hidden = true;
-          // A request still pending from a previous opening must not leave this
-          // one with a disabled button.
+          // A different building starts clean; a building with an unresolved
+          // submission stays locked, however the visitor got back here.
           var sb = form.querySelector('.bldg-modal__submit');
-          if (sb) { sb.disabled = false; sb.textContent = 'Send enquiry'; }
+          if (sb) {
+            if (unresolved[building]) {
+              sb.disabled = true; sb.textContent = 'Awaiting confirmation';
+              errEl.textContent = UNKNOWN_MSG; errEl.hidden = false;
+            } else {
+              sb.disabled = false; sb.textContent = 'Send enquiry';
+            }
+          }
           modal.hidden = false;
           document.body.classList.add('bldg-modal-open');
           lastFocus = document.activeElement;
@@ -999,8 +1016,10 @@
           var timer = setTimeout(function () {
             if (tracked) return;
             timedOut = true;
+            unresolved[building] = { lead_code: leadCode, reason: 'timeout' };
             track('form_submission_timeout', {
-              building: building, form_id: 'building_modal', lead_code: leadCode
+              building: building, form_id: 'building_modal', lead_code: leadCode,
+              delivery: 'unknown'
             });
             if (openToken === myToken) {
               errEl.textContent = 'This is taking longer than expected. We may ' +
@@ -1009,7 +1028,8 @@
               errEl.hidden = false;
               // Send stays DISABLED. Re-enabling it after an unknown delivery
               // is a retry control, and a retry here duplicates the enquiry.
-              btn.textContent = 'Sent - awaiting confirmation';
+              // "Sent" would overstate it - nothing has been acknowledged.
+              btn.textContent = 'Awaiting confirmation';
             }
           }, 20000);
 
@@ -1047,6 +1067,7 @@
               fbq('track', 'Lead', { content_name: AREA, content_category: intent() });
             }
 
+            delete unresolved[building];   // confirmed delivered
             // A late success is still a success: replace the timeout notice.
             if (openToken === myToken) {
               errEl.hidden = true;
@@ -1056,17 +1077,23 @@
             clearTimeout(timer);
             if (tracked) { return; }
             tracked = true;
+            // F2-R2: neither a transport error nor a non-ok status locates the
+            // failure before or after the server accepted it. Only a 2xx proves
+            // delivery, so every other outcome is UNKNOWN and none of them may
+            // offer a retry control.
+            unresolved[building] = {
+              lead_code: leadCode,
+              reason: (err && err.message) || 'transport_error'
+            };
             track('form_submission_failed', {
               building: building, form_id: 'building_modal', lead_code: leadCode,
-              failure_reason: (err && err.message) || 'network_error'
+              delivery: 'unknown',
+              failure_reason: (err && err.message) || 'transport_error'
             });
-            // A real failure means nothing was delivered, so retrying is safe
-            // and the button comes back. After a timeout it does not.
-            if (openToken === myToken && !timedOut) {
-              errEl.textContent =
-                'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
+            if (openToken === myToken) {
+              errEl.textContent = UNKNOWN_MSG;
               errEl.hidden = false;
-              btn.disabled = false; btn.textContent = 'Send enquiry';
+              btn.disabled = true; btn.textContent = 'Awaiting confirmation';
             }
           });
         });
