@@ -69,6 +69,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -338,7 +339,7 @@
           <div class="availability-inner">
             <div class="intent-summary-heading">
               <h2 id="availability-title">Offices available now in Business Bay</h2>
-              <p class="availability-sub">63 offices across
+              <p class="availability-sub">145 offices across
                  6 buildings. Rents shown are annual, as listed by
                  Cushman &amp; Wakefield Core.</p>
             </div>
@@ -350,7 +351,7 @@
               <p class="bldg-area">Business Bay, Dubai</p>
               <p class="bldg-blurb">Twin-tower address on the Bay Avenue side of Business Bay.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>5 offices</dd></div>
+                <div><dt>Available</dt><dd>9 offices</dd></div>
                 <div><dt>Size</dt><dd>807 &ndash; 3,716 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 241,950 &ndash; 1,114,902 <span>/year</span></dd></div>
               </dl>
@@ -372,7 +373,7 @@
               <p class="bldg-area">Business Bay, Dubai</p>
               <p class="bldg-blurb">Larger floorplates — every available unit is over 1,700 sqft.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>4 offices</dd></div>
+                <div><dt>Available</dt><dd>10 offices</dd></div>
                 <div><dt>Size</dt><dd>1,701 &ndash; 1,711 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 821,900 &ndash; 826,900 <span>/year</span></dd></div>
               </dl>
@@ -388,13 +389,13 @@
             </div>
           </article>
           <article class="bldg-card">
-            <div class="bldg-media"><picture><source srcset="images/buildings/single-business-tower.webp" type="image/webp"><img src="images/buildings/single-business-tower.jpg" width="800" height="500" alt="Office space in Single Business Tower, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-media"><picture><source srcset="images/buildings/single-business-tower.webp" type="image/webp"><img src="images/buildings/single-business-tower.jpg" width="800" height="500" alt="Office space in Single Business Tower, Sheikh Zayed Road, at the entrance to Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
             <div class="bldg-body">
               <h3>Single Business Tower</h3>
-              <p class="bldg-area">Business Bay, Dubai</p>
-              <p class="bldg-blurb">Sheikh Zayed Road frontage, with whole floors to 10,340 sqft.</p>
+              <p class="bldg-area">Sheikh Zayed Road, at the entrance to Business Bay</p>
+              <p class="bldg-blurb">At the entrance to Business Bay, with whole floors to 10,340 sqft.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>12 offices</dd></div>
+                <div><dt>Available</dt><dd>33 offices</dd></div>
                 <div><dt>Size</dt><dd>935 &ndash; 10,340 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 243,100 &ndash; 2,791,800 <span>/year</span></dd></div>
               </dl>
@@ -414,9 +415,9 @@
             <div class="bldg-body">
               <h3>Blue Bay Tower</h3>
               <p class="bldg-area">Business Bay, Dubai</p>
-              <p class="bldg-blurb">The broadest size range on this page, from 541 sqft.</p>
+              <p class="bldg-blurb">The smallest starting size here &mdash; fitted units from 541 sqft.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>14 offices</dd></div>
+                <div><dt>Available</dt><dd>36 offices</dd></div>
                 <div><dt>Size</dt><dd>541 &ndash; 2,275 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 108,200 &ndash; 455,000 <span>/year</span></dd></div>
               </dl>
@@ -436,9 +437,9 @@
             <div class="bldg-body">
               <h3>Capital Golden Tower</h3>
               <p class="bldg-area">Business Bay, Dubai</p>
-              <p class="bldg-blurb">Mid-size through to full-floor units, 1,207 to 4,628 sqft.</p>
+              <p class="bldg-blurb">Mid-size through to full-floor units, from 1,207 sqft.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>7 offices</dd></div>
+                <div><dt>Available</dt><dd>17 offices</dd></div>
                 <div><dt>Size</dt><dd>1,207 &ndash; 4,628 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 187,085 &ndash; 1,018,160 <span>/year</span></dd></div>
               </dl>
@@ -460,7 +461,7 @@
               <p class="bldg-area">Business Bay, Dubai</p>
               <p class="bldg-blurb">The most units currently available of the six buildings.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>21 offices</dd></div>
+                <div><dt>Available</dt><dd>40 offices</dd></div>
                 <div><dt>Size</dt><dd>555 &ndash; 2,008 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 208,125 &ndash; 753,000 <span>/year</span></dd></div>
               </dl>
@@ -478,6 +479,7 @@
             </div>
           </div>
         </section>
+
 
 
 
@@ -681,6 +683,7 @@
 
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -740,32 +743,46 @@
 
     <script id="availability-js">
       (function () {
-        var modal   = document.getElementById('bldgModal');
-        var form    = document.getElementById('bldgModalForm');
-        var nameEl  = document.getElementById('bldgModalBuilding');
-        var errEl   = document.getElementById('bldgModalError');
-        var doneEl  = document.getElementById('bldgModalDone');
-        var lastFocus = null, current = '';
+        var modal  = document.getElementById('bldgModal');
+        var form   = document.getElementById('bldgModalForm');
+        var nameEl = document.getElementById('bldgModalBuilding');
+        var errEl  = document.getElementById('bldgModalError');
+        var doneEl = document.getElementById('bldgModalDone');
+        var head   = modal.querySelector('.bldg-modal__head');
+        var lastFocus = null, openBuilding = '', startedFor = '';
+
+        var AREA = 'Business Bay';
+        var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        function intent() {
+          return document.body.getAttribute('data-intent') || 'rent';
+        }
+        function track(evt, props) {
+          props = props || {};
+          props.placement = 'building_card';
+          props.landing_experience = 'business-bay';
+          if (window.CWC && CWC.track) { CWC.track(evt, props); }
+          else if (window.posthog) { posthog.capture(evt, props); }
+        }
 
         function open(building) {
-          current = building;
+          openBuilding = building;
+          startedFor = '';
           nameEl.textContent = building;
           form.querySelector('[name="building_enquired"]').value = building;
-          var intent = document.body.getAttribute('data-intent') || 'rent';
-          form.querySelector('[name="enquiry_type"]').value = intent;
+          form.querySelector('[name="enquiry_type"]').value = intent();
           form.querySelector('[name="_subject"]').value =
-            'Business Bay ' + (intent === 'sale' ? 'sale' : 'rental') +
+            'Business Bay ' + (intent() === 'sale' ? 'sale' : 'rental') +
             ' enquiry - ' + building;
-          form.hidden = false; doneEl.hidden = true; errEl.hidden = true;
-          modal.querySelector('.bldg-modal__head').hidden = false;
+          form.hidden = false; head.hidden = false;
+          doneEl.hidden = true; errEl.hidden = true;
           modal.hidden = false;
           document.body.classList.add('bldg-modal-open');
           lastFocus = document.activeElement;
           var first = form.querySelector('input[name="name"]');
           if (first) setTimeout(function () { first.focus(); }, 60);
-          if (window.posthog) {
-            posthog.capture('building_enquiry_opened', { building: building });
-          }
+          track('building_enquiry_opened', { building: building });
+          track('form_viewed', { building: building, form_id: 'building_modal' });
         }
 
         function close() {
@@ -782,17 +799,25 @@
         modal.querySelectorAll('[data-close]').forEach(function (el) {
           el.addEventListener('click', close);
         });
+
+        // form_started on FIRST INPUT, so the funnel matches the main form.
+        form.addEventListener('input', function (e) {
+          if (startedFor === openBuilding) return;
+          startedFor = openBuilding;
+          track('form_started', {
+            building: openBuilding, form_id: 'building_modal',
+            first_field: (e.target && e.target.name) || ''
+          });
+        });
+
         document.addEventListener('keydown', function (e) {
           if (modal.hidden) return;
           if (e.key === 'Escape') { close(); return; }
           if (e.key !== 'Tab') return;
-          // Keep focus inside the dialog while it is open.
           var panel = modal.querySelector('.bldg-modal__panel');
           var f = [].slice.call(panel.querySelectorAll(
             'a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])'
-          )).filter(function (el) {
-            return !el.disabled && el.offsetParent !== null;
-          });
+          )).filter(function (el) { return !el.disabled && el.offsetParent !== null; });
           if (!f.length) return;
           var first = f[0], last = f[f.length - 1];
           if (e.shiftKey && document.activeElement === first) {
@@ -805,67 +830,105 @@
         form.addEventListener('submit', function (e) {
           e.preventDefault();
           errEl.hidden = true;
-          var missing = [];
-          ['name', 'mobile', 'email'].forEach(function (n) {
-            var el = form.querySelector('[name="' + n + '"]');
-            var bad = !el.value.trim();
-            el.setAttribute('aria-invalid', bad ? 'true' : 'false');
-            if (bad) missing.push(n);
-          });
+
+          var nameEl2 = form.querySelector('[name="name"]');
+          var mobEl   = form.querySelector('[name="mobile"]');
+          var mailEl  = form.querySelector('[name="email"]');
           var consent = form.querySelector('[name="consent"]');
-          if (!consent.checked) missing.push('consent');
-          if (missing.length) {
-            errEl.textContent = 'Please complete your name, number, email and consent.';
+
+          var phone = (mobEl.value || '').trim();
+          var digits = phone.replace(/[^0-9]/g, '');
+          var mail = (mailEl.value || '').trim();
+
+          var bad = [];
+          if (!nameEl2.value.trim()) bad.push('name');
+          if (digits.length < 7 || digits.length > 15) bad.push('mobile');
+          if (!EMAIL_RE.test(mail)) bad.push('email');
+          if (!consent.checked) bad.push('consent');
+          nameEl2.setAttribute('aria-invalid', bad.indexOf('name') > -1);
+          mobEl.setAttribute('aria-invalid', bad.indexOf('mobile') > -1);
+          mailEl.setAttribute('aria-invalid', bad.indexOf('email') > -1);
+
+          if (bad.length) {
+            errEl.textContent = bad.indexOf('email') > -1 && bad.length === 1
+              ? 'Please enter a valid email address.'
+              : (bad.indexOf('mobile') > -1 && bad.length === 1
+                 ? 'Please enter a valid contact number.'
+                 : 'Please enter your name, a valid number and email, and accept the consent.');
             errEl.hidden = false;
-            if (window.posthog) {
-              posthog.capture('form_validation_error',
-                { building: current, missing: missing.join(',') });
-            }
+            track('form_validation_error',
+              { building: openBuilding, form_id: 'building_modal', missing: bad.join(',') });
             return;
           }
+
+          // F2: bind this submission to the building it was opened for.
+          var building = openBuilding;
           var btn = form.querySelector('.bldg-modal__submit');
           btn.disabled = true; btn.textContent = 'Sending...';
-          if (window.posthog) {
-            posthog.capture('form_started', { building: current });
+
+          // F1: same lead code + hidden-field injection as the main form.
+          var leadCode = (window.CWC && CWC.newLeadCode) ? CWC.newLeadCode() : '';
+          if (window.CWC && CWC.injectInto) {
+            CWC.injectInto(form, { lead_code: leadCode });
           }
+          var fd = new FormData(form);
+          fd.set('mobile', phone);
+          fd.set('building_enquired', building);
+
           fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
+            method: 'POST', body: fd, headers: { 'Accept': 'application/json' }
           }).then(function (r) {
-            if (!r.ok) throw new Error('bad status ' + r.status);
-            form.hidden = true;
-            modal.querySelector('.bldg-modal__head').hidden = true;
-            doneEl.hidden = false;
-            if (window.posthog) {
-              posthog.capture('form_submitted',
-                { building: current, landing_experience: 'business-bay' });
+            if (!r.ok) throw new Error('Submission failed');
+
+            // Google Ads conversion - the same action the main form fires.
+            if (typeof gtag === 'function') {
+              gtag('set', 'user_data', {
+                email: mail || undefined, phone_number: phone || undefined
+              });
+              gtag('event', 'conversion', {
+                send_to: 'AW-17944022933/kWTzCMDtndAcEJWfsOxC'
+              });
             }
-          }).catch(function () {
-            errEl.textContent =
-              'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
-            errEl.hidden = false;
+            track('form_submitted', {
+              building: building, form_id: 'building_modal', lead_code: leadCode,
+              timeline: fd.get('preferred_timeline') || ''
+            });
+            if (typeof fbq === 'function') {
+              fbq('track', 'Lead', { content_name: AREA, content_category: intent() });
+            }
+
+            if (openBuilding === building) {
+              form.hidden = true; head.hidden = true; doneEl.hidden = false;
+            }
+          }).catch(function (err) {
+            track('form_submission_failed', {
+              building: building, form_id: 'building_modal', lead_code: leadCode,
+              failure_reason: (err && err.message) || 'network_error'
+            });
+            if (openBuilding === building) {
+              errEl.textContent =
+                'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
+              errEl.hidden = false;
+            }
           }).then(function () {
             btn.disabled = false; btn.textContent = 'Send enquiry';
           });
         });
 
-        // attribution.js clears ?text= from wa.me links when the page loads, so
-        // the message is written back on the click itself. Its reference code
-        // and whatsapp_clicked event still fire as normal.
+        // F6: no second click event. attribution.js already fires the canonical
+        // whatsapp_clicked for these links; a duplicate would double-count.
+        // The reference code goes INTO the message so the broker receives it.
         document.querySelectorAll('.bldg-wa').forEach(function (a) {
           a.addEventListener('click', function () {
             var b = a.getAttribute('data-building');
+            var ref = a.dataset.cwcRef || '';
             var msg = "Hi, I'm interested in office space at " + b +
-                      " in Business Bay. Could you share what is available?";
+                      " in " + AREA + ". Could you share what is available?" +
+                      (ref ? "\n\nRef: " + ref : "");
             a.href = a.href.split('?')[0] + '?text=' + encodeURIComponent(msg);
-            if (window.posthog) {
-              posthog.capture('building_whatsapp_clicked', { building: b });
-            }
           });
         });
 
-        // A dead photo is worse than none: hide the frame if it fails to load.
         document.querySelectorAll('.bldg-media img').forEach(function (im) {
           im.addEventListener('error', function () {
             im.parentElement.classList.add('bldg-media--empty');

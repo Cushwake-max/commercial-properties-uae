@@ -66,6 +66,7 @@
     <meta name="twitter:description" content="Find office space for rent on Sheikh Zayed Road with Cushman &amp; Wakefield Core. Established, connected and competitive — our commercial team will shortlist suitable towers.">
     <meta name="twitter:image" content="https://commercialpropertiesintheuae.ae/sheikh-zayed-road/images/hero.jpg">
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -340,7 +341,7 @@
               <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
               <p class="bldg-blurb">Exclusively ours &mdash; from a single suite to a 16,419 sqft whole floor.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Available</dt><dd>13 offices</dd></div>
                 <div><dt>Size</dt><dd>1,141 &ndash; 16,419 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 498,617 &ndash; 7,546,143 <span>/year</span></dd></div>
               </dl>
@@ -428,7 +429,7 @@
               <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
               <p class="bldg-blurb">Take one floor or several &mdash; matching plates that expand as you do.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Available</dt><dd>10 offices</dd></div>
                 <div><dt>Size</dt><dd>1,332 &ndash; 4,006 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 226,440 &ndash; 620,930 <span>/year</span></dd></div>
               </dl>
@@ -472,7 +473,7 @@
               <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
               <p class="bldg-blurb">Business-park calm with its own parking, moments off the highway.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Available</dt><dd>14 offices</dd></div>
                 <div><dt>Size</dt><dd>920 &ndash; 2,937 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 444,570 &ndash; 1,588,000 <span>/year</span></dd></div>
               </dl>
@@ -536,9 +537,9 @@
             <div class="bldg-body">
               <h3>Millennium Plaza Downtown Hotel</h3>
               <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
-              <p class="bldg-blurb">Shell-and-core floors to 47,416 sqft. Build it exactly how you want it.</p>
+              <p class="bldg-blurb">Fitted suites and shell-and-core floors to 47,416 sqft.</p>
               <dl class="bldg-facts">
-                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Available</dt><dd>57 offices</dd></div>
                 <div><dt>Size</dt><dd>1,894 &ndash; 47,416 sqft</dd></div>
                 <div><dt>Rent</dt><dd>AED 530,449 &ndash; 13,276,676 <span>/year</span></dd></div>
               </dl>
@@ -556,6 +557,7 @@
             </div>
           </div>
         </section>
+
 
 
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
@@ -746,6 +748,7 @@
     </noscript>
     <!-- End LinkedIn Insight Tag -->
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -811,16 +814,30 @@
         var errEl  = document.getElementById('bldgModalError');
         var doneEl = document.getElementById('bldgModalDone');
         var head   = modal.querySelector('.bldg-modal__head');
-        var lastFocus = null, current = '';
+        var lastFocus = null, openBuilding = '', startedFor = '';
+
+        var AREA = 'Sheikh Zayed Road';
+        var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        function intent() {
+          return document.body.getAttribute('data-intent') || 'rent';
+        }
+        function track(evt, props) {
+          props = props || {};
+          props.placement = 'building_card';
+          props.landing_experience = 'sheikh-zayed-road';
+          if (window.CWC && CWC.track) { CWC.track(evt, props); }
+          else if (window.posthog) { posthog.capture(evt, props); }
+        }
 
         function open(building) {
-          current = building;
+          openBuilding = building;
+          startedFor = '';
           nameEl.textContent = building;
           form.querySelector('[name="building_enquired"]').value = building;
-          var intent = document.body.getAttribute('data-intent') || 'rent';
-          form.querySelector('[name="enquiry_type"]').value = intent;
+          form.querySelector('[name="enquiry_type"]').value = intent();
           form.querySelector('[name="_subject"]').value =
-            'Sheikh Zayed Road ' + (intent === 'sale' ? 'sale' : 'rental') +
+            'Sheikh Zayed Road ' + (intent() === 'sale' ? 'sale' : 'rental') +
             ' enquiry - ' + building;
           form.hidden = false; head.hidden = false;
           doneEl.hidden = true; errEl.hidden = true;
@@ -829,9 +846,8 @@
           lastFocus = document.activeElement;
           var first = form.querySelector('input[name="name"]');
           if (first) setTimeout(function () { first.focus(); }, 60);
-          if (window.posthog) {
-            posthog.capture('building_enquiry_opened', { building: building });
-          }
+          track('building_enquiry_opened', { building: building });
+          track('form_viewed', { building: building, form_id: 'building_modal' });
         }
 
         function close() {
@@ -848,6 +864,17 @@
         modal.querySelectorAll('[data-close]').forEach(function (el) {
           el.addEventListener('click', close);
         });
+
+        // form_started on FIRST INPUT, so the funnel matches the main form.
+        form.addEventListener('input', function (e) {
+          if (startedFor === openBuilding) return;
+          startedFor = openBuilding;
+          track('form_started', {
+            building: openBuilding, form_id: 'building_modal',
+            first_field: (e.target && e.target.name) || ''
+          });
+        });
+
         document.addEventListener('keydown', function (e) {
           if (modal.hidden) return;
           if (e.key === 'Escape') { close(); return; }
@@ -868,58 +895,102 @@
         form.addEventListener('submit', function (e) {
           e.preventDefault();
           errEl.hidden = true;
-          var missing = [];
-          ['name', 'mobile', 'email'].forEach(function (n) {
-            var el = form.querySelector('[name="' + n + '"]');
-            var bad = !el.value.trim();
-            el.setAttribute('aria-invalid', bad ? 'true' : 'false');
-            if (bad) missing.push(n);
-          });
-          if (!form.querySelector('[name="consent"]').checked) missing.push('consent');
-          if (missing.length) {
-            errEl.textContent = 'Please complete your name, number, email and consent.';
+
+          var nameEl2 = form.querySelector('[name="name"]');
+          var mobEl   = form.querySelector('[name="mobile"]');
+          var mailEl  = form.querySelector('[name="email"]');
+          var consent = form.querySelector('[name="consent"]');
+
+          var phone = (mobEl.value || '').trim();
+          var digits = phone.replace(/[^0-9]/g, '');
+          var mail = (mailEl.value || '').trim();
+
+          var bad = [];
+          if (!nameEl2.value.trim()) bad.push('name');
+          if (digits.length < 7 || digits.length > 15) bad.push('mobile');
+          if (!EMAIL_RE.test(mail)) bad.push('email');
+          if (!consent.checked) bad.push('consent');
+          nameEl2.setAttribute('aria-invalid', bad.indexOf('name') > -1);
+          mobEl.setAttribute('aria-invalid', bad.indexOf('mobile') > -1);
+          mailEl.setAttribute('aria-invalid', bad.indexOf('email') > -1);
+
+          if (bad.length) {
+            errEl.textContent = bad.indexOf('email') > -1 && bad.length === 1
+              ? 'Please enter a valid email address.'
+              : (bad.indexOf('mobile') > -1 && bad.length === 1
+                 ? 'Please enter a valid contact number.'
+                 : 'Please enter your name, a valid number and email, and accept the consent.');
             errEl.hidden = false;
-            if (window.posthog) {
-              posthog.capture('form_validation_error',
-                { building: current, missing: missing.join(',') });
-            }
+            track('form_validation_error',
+              { building: openBuilding, form_id: 'building_modal', missing: bad.join(',') });
             return;
           }
+
+          // F2: bind this submission to the building it was opened for.
+          var building = openBuilding;
           var btn = form.querySelector('.bldg-modal__submit');
           btn.disabled = true; btn.textContent = 'Sending...';
-          if (window.posthog) posthog.capture('form_started', { building: current });
+
+          // F1: same lead code + hidden-field injection as the main form.
+          var leadCode = (window.CWC && CWC.newLeadCode) ? CWC.newLeadCode() : '';
+          if (window.CWC && CWC.injectInto) {
+            CWC.injectInto(form, { lead_code: leadCode });
+          }
+          var fd = new FormData(form);
+          fd.set('mobile', phone);
+          fd.set('building_enquired', building);
+
           fetch(form.action, {
-            method: 'POST', body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
+            method: 'POST', body: fd, headers: { 'Accept': 'application/json' }
           }).then(function (r) {
-            if (!r.ok) throw new Error('bad status ' + r.status);
-            form.hidden = true; head.hidden = true; doneEl.hidden = false;
-            if (window.posthog) {
-              posthog.capture('form_submitted',
-                { building: current, landing_experience: 'sheikh-zayed-road' });
+            if (!r.ok) throw new Error('Submission failed');
+
+            // Google Ads conversion - the same action the main form fires.
+            if (typeof gtag === 'function') {
+              gtag('set', 'user_data', {
+                email: mail || undefined, phone_number: phone || undefined
+              });
+              gtag('event', 'conversion', {
+                send_to: 'AW-17944022933/kWTzCMDtndAcEJWfsOxC'
+              });
             }
-          }).catch(function () {
-            errEl.textContent =
-              'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
-            errEl.hidden = false;
+            track('form_submitted', {
+              building: building, form_id: 'building_modal', lead_code: leadCode,
+              timeline: fd.get('preferred_timeline') || ''
+            });
+            if (typeof fbq === 'function') {
+              fbq('track', 'Lead', { content_name: AREA, content_category: intent() });
+            }
+
+            if (openBuilding === building) {
+              form.hidden = true; head.hidden = true; doneEl.hidden = false;
+            }
+          }).catch(function (err) {
+            track('form_submission_failed', {
+              building: building, form_id: 'building_modal', lead_code: leadCode,
+              failure_reason: (err && err.message) || 'network_error'
+            });
+            if (openBuilding === building) {
+              errEl.textContent =
+                'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
+              errEl.hidden = false;
+            }
           }).then(function () {
             btn.disabled = false; btn.textContent = 'Send enquiry';
           });
         });
 
-        // attribution.js clears ?text= from wa.me links when the page loads, so
-        // the message is written back on the click itself. Its reference code
-        // and whatsapp_clicked event still fire as normal.
+        // F6: no second click event. attribution.js already fires the canonical
+        // whatsapp_clicked for these links; a duplicate would double-count.
+        // The reference code goes INTO the message so the broker receives it.
         document.querySelectorAll('.bldg-wa').forEach(function (a) {
           a.addEventListener('click', function () {
             var b = a.getAttribute('data-building');
+            var ref = a.dataset.cwcRef || '';
             var msg = "Hi, I'm interested in office space at " + b +
-                      " on Sheikh Zayed Road. Could you share what is available?";
+                      " in " + AREA + ". Could you share what is available?" +
+                      (ref ? "\n\nRef: " + ref : "");
             a.href = a.href.split('?')[0] + '?text=' + encodeURIComponent(msg);
-            if (window.posthog) {
-              // Distinct from whatsapp_clicked so existing counts stay clean.
-              posthog.capture('building_whatsapp_clicked', { building: b });
-            }
           });
         });
 
