@@ -74,6 +74,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -493,6 +494,7 @@
 
 
 
+
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
                     <p class="kicker" data-copy="sectionKicker">Business Bay Leasing Advantages</p>
@@ -696,6 +698,7 @@
 
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -808,6 +811,10 @@
             ' enquiry - ' + building;
           form.hidden = false; head.hidden = false;
           doneEl.hidden = true; errEl.hidden = true;
+          // A request still pending from a previous opening must not leave this
+          // one with a disabled button.
+          var sb = form.querySelector('.bldg-modal__submit');
+          if (sb) { sb.disabled = false; sb.textContent = 'Send enquiry'; }
           modal.hidden = false;
           document.body.classList.add('bldg-modal-open');
           lastFocus = document.activeElement;
@@ -923,10 +930,13 @@
           // disabled forever. A timeout is DELIVERY UNKNOWN, not a rejection -
           // the server may already hold the enquiry - so the message does not
           // invite a blind resubmit that would duplicate it.
-          var settled = false;
+          // tracked exactly once, on the REAL outcome - a client timeout says
+          // nothing about what the server did, so a late response must still
+          // fire the conversion rather than be swallowed.
+          var tracked = false, timedOut = false;
           var timer = setTimeout(function () {
-            if (settled) return;
-            settled = true;
+            if (tracked) return;
+            timedOut = true;
             track('form_submission_timeout', {
               building: building, form_id: 'building_modal', lead_code: leadCode
             });
@@ -935,7 +945,9 @@
                 'already have your enquiry - please call +971 4 245 2100 or use ' +
                 'WhatsApp rather than sending again.';
               errEl.hidden = false;
-              btn.disabled = false; btn.textContent = 'Send enquiry';
+              // Send stays DISABLED. Re-enabling it after an unknown delivery
+              // is a retry control, and a retry here duplicates the enquiry.
+              btn.textContent = 'Sent - awaiting confirmation';
             }
           }, 20000);
 
@@ -953,8 +965,8 @@
           }).then(function (r) {
             if (!r.ok) throw new Error('Submission failed');
             clearTimeout(timer);
-            if (settled) { return; }   // timed out already; do not contradict it
-            settled = true;
+            if (tracked) { return; }
+            tracked = true;
 
             // Google Ads conversion - the same action the main form fires.
             if (typeof gtag === 'function') {
@@ -973,25 +985,25 @@
               fbq('track', 'Lead', { content_name: AREA, content_category: intent() });
             }
 
+            // A late success is still a success: replace the timeout notice.
             if (openToken === myToken) {
+              errEl.hidden = true;
               form.hidden = true; head.hidden = true; doneEl.hidden = false;
             }
           }).catch(function (err) {
             clearTimeout(timer);
-            if (settled) { return; }
-            settled = true;
+            if (tracked) { return; }
+            tracked = true;
             track('form_submission_failed', {
               building: building, form_id: 'building_modal', lead_code: leadCode,
               failure_reason: (err && err.message) || 'network_error'
             });
-            if (openToken === myToken) {
+            // A real failure means nothing was delivered, so retrying is safe
+            // and the button comes back. After a timeout it does not.
+            if (openToken === myToken && !timedOut) {
               errEl.textContent =
                 'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
               errEl.hidden = false;
-            }
-          }).then(function () {
-            // Only the opening that submitted may re-enable its own button.
-            if (openToken === myToken) {
               btn.disabled = false; btn.textContent = 'Send enquiry';
             }
           });
