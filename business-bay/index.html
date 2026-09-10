@@ -73,6 +73,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -491,6 +492,7 @@
 
 
 
+
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
                     <p class="kicker" data-copy="sectionKicker">Business Bay Leasing Advantages</p>
@@ -685,6 +687,7 @@
             src="https://px.ads.linkedin.com/collect/?pid=8880705&fmt=gif" />
     </noscript>
     <!-- End LinkedIn Insight Tag -->
+
 
 
 
@@ -916,6 +919,25 @@
           pendingToken = myToken;
           var btn = form.querySelector('.bldg-modal__submit');
           btn.disabled = true; btn.textContent = 'Sending...';
+          // F2 recovery: a request that never settles otherwise leaves Send
+          // disabled forever. A timeout is DELIVERY UNKNOWN, not a rejection -
+          // the server may already hold the enquiry - so the message does not
+          // invite a blind resubmit that would duplicate it.
+          var settled = false;
+          var timer = setTimeout(function () {
+            if (settled) return;
+            settled = true;
+            track('form_submission_timeout', {
+              building: building, form_id: 'building_modal', lead_code: leadCode
+            });
+            if (openToken === myToken) {
+              errEl.textContent = 'This is taking longer than expected. We may ' +
+                'already have your enquiry - please call +971 4 245 2100 or use ' +
+                'WhatsApp rather than sending again.';
+              errEl.hidden = false;
+              btn.disabled = false; btn.textContent = 'Send enquiry';
+            }
+          }, 20000);
 
           // F1: same lead code + hidden-field injection as the main form.
           var leadCode = (window.CWC && CWC.newLeadCode) ? CWC.newLeadCode() : '';
@@ -930,6 +952,9 @@
             method: 'POST', body: fd, headers: { 'Accept': 'application/json' }
           }).then(function (r) {
             if (!r.ok) throw new Error('Submission failed');
+            clearTimeout(timer);
+            if (settled) { return; }   // timed out already; do not contradict it
+            settled = true;
 
             // Google Ads conversion - the same action the main form fires.
             if (typeof gtag === 'function') {
@@ -952,6 +977,9 @@
               form.hidden = true; head.hidden = true; doneEl.hidden = false;
             }
           }).catch(function (err) {
+            clearTimeout(timer);
+            if (settled) { return; }
+            settled = true;
             track('form_submission_failed', {
               building: building, form_id: 'building_modal', lead_code: leadCode,
               failure_reason: (err && err.message) || 'network_error'
@@ -962,7 +990,10 @@
               errEl.hidden = false;
             }
           }).then(function () {
-            btn.disabled = false; btn.textContent = 'Send enquiry';
+            // Only the opening that submitted may re-enable its own button.
+            if (openToken === myToken) {
+              btn.disabled = false; btn.textContent = 'Send enquiry';
+            }
           });
         });
 
