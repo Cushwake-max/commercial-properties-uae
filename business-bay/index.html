@@ -67,6 +67,7 @@
     <meta name="twitter:image" content="https://commercialpropertiesintheuae.ae/business-bay/images/hero.jpg">
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -142,6 +143,11 @@
                              background: #F4F3F8; border-left: 3px solid #E30613;
                              color: #5b5870; font-size: 12px; }
       .bldg-modal__form { display: flex; flex-direction: column; gap: 13px; }
+      /* display:flex on a class beats the UA [hidden]{display:none} rule, so
+         the form stayed visible behind the thank-you. Force it. */
+      .bldg-modal__form[hidden], .bldg-modal__head[hidden] { display: none !important; }
+      .bldg-modal__done p { margin: 0; padding: 8px 0 4px; color: #1D1740;
+                            font-size: 16px; line-height: 1.65; }
       .bldg-modal__form label { display: flex; flex-direction: column; gap: 6px;
                                 color: #1D1740; font-size: 11px; font-weight: 600;
                                 letter-spacing: .05em; text-transform: uppercase; }
@@ -171,7 +177,6 @@
       .bldg-modal__submit:hover { background: #b2050f; }
       .bldg-modal__submit[disabled] { opacity: .6; cursor: default; }
       .bldg-modal__error { margin: 0; color: #E30613; font-size: 12px; }
-      .bldg-modal__done h3 { margin: 0 0 10px; color: #1D1740; font-size: 20px; }
       .bldg-modal__done p { margin: 0 0 20px; color: #5b5870; font-size: 14px;
                             line-height: 1.6; }
       body.bldg-modal-open { overflow: hidden; }
@@ -430,6 +435,7 @@
 
 
 
+
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
                     <p class="kicker" data-copy="sectionKicker">Business Bay Leasing Advantages</p>
@@ -626,6 +632,7 @@
     <!-- End LinkedIn Insight Tag -->
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -677,10 +684,8 @@
                  aria-live="polite" hidden></p>
             </form>
             <div class="bldg-modal__done" id="bldgModalDone" hidden>
-              <h3>Thank you &mdash; enquiry received</h3>
-              <p>A member of the Cushman &amp; Wakefield Core team will contact you
-                 about <strong id="bldgModalDoneName"></strong>.</p>
-              <button type="button" class="bldg-modal__submit" data-close>Close</button>
+              <p>Thank you. Your enquiry has been received. A member of the
+                 Cushman &amp; Wakefield Core team will contact you shortly.</p>
             </div>
           </div>
         </div>
@@ -692,7 +697,6 @@
         var nameEl  = document.getElementById('bldgModalBuilding');
         var errEl   = document.getElementById('bldgModalError');
         var doneEl  = document.getElementById('bldgModalDone');
-        var doneNm  = document.getElementById('bldgModalDoneName');
         var lastFocus = null, current = '';
 
         function open(building) {
@@ -705,6 +709,7 @@
             'Business Bay ' + (intent === 'sale' ? 'sale' : 'rental') +
             ' enquiry - ' + building;
           form.hidden = false; doneEl.hidden = true; errEl.hidden = true;
+          modal.querySelector('.bldg-modal__head').hidden = false;
           modal.hidden = false;
           document.body.classList.add('bldg-modal-open');
           lastFocus = document.activeElement;
@@ -781,8 +786,9 @@
             headers: { 'Accept': 'application/json' }
           }).then(function (r) {
             if (!r.ok) throw new Error('bad status ' + r.status);
-            form.hidden = true; doneEl.hidden = false;
-            doneNm.textContent = current;
+            form.hidden = true;
+            modal.querySelector('.bldg-modal__head').hidden = true;
+            doneEl.hidden = false;
             if (window.posthog) {
               posthog.capture('form_submitted',
                 { building: current, landing_experience: 'business-bay' });
