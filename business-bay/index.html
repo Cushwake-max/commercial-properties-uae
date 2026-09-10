@@ -68,6 +68,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -99,7 +100,16 @@
       .bldg-facts dd { margin: 0; color: #1D1740; font-size: 13px; font-weight: 600;
                        text-align: right; }
       .bldg-facts dd span { color: #545859; font-weight: 400; }
-      .bldg-actions { margin-top: auto; }
+      .bldg-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+      .bldg-wa {
+        display: flex; align-items: center; justify-content: center; gap: 9px;
+        min-height: 48px; padding: 12px 16px; text-decoration: none;
+        background: #fff; border: 1px solid #25D366; color: #128C46;
+        font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+        letter-spacing: .02em; transition: background .15s ease, color .15s ease;
+      }
+      .bldg-wa i { font-size: 17px; }
+      .bldg-wa:hover { background: #25D366; color: #fff; }
       .bldg-cta {
         width: 100%; min-height: 48px; padding: 12px 16px; border: 0; cursor: pointer;
         background: #E30613; color: #fff; font-family: 'Montserrat', sans-serif;
@@ -346,6 +356,12 @@
               </dl>
               <div class="bldg-actions">
                 <button type="button" class="bldg-cta" data-building="U Bora Tower 1">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="U Bora Tower 1"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about U Bora Tower 1 on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </article>
@@ -362,6 +378,12 @@
               </dl>
               <div class="bldg-actions">
                 <button type="button" class="bldg-cta" data-building="One By Omniyat">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="One By Omniyat"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about One By Omniyat on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </article>
@@ -378,6 +400,12 @@
               </dl>
               <div class="bldg-actions">
                 <button type="button" class="bldg-cta" data-building="Single Business Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Single Business Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Single Business Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </article>
@@ -394,6 +422,12 @@
               </dl>
               <div class="bldg-actions">
                 <button type="button" class="bldg-cta" data-building="Blue Bay Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Blue Bay Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Blue Bay Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </article>
@@ -410,6 +444,12 @@
               </dl>
               <div class="bldg-actions">
                 <button type="button" class="bldg-cta" data-building="Capital Golden Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Capital Golden Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Capital Golden Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </article>
@@ -426,12 +466,19 @@
               </dl>
               <div class="bldg-actions">
                 <button type="button" class="bldg-cta" data-building="Magnum Opus Bay">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Magnum Opus Bay"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Magnum Opus Bay on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </article>
             </div>
           </div>
         </section>
+
 
 
 
@@ -633,6 +680,7 @@
 
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -799,6 +847,21 @@
             errEl.hidden = false;
           }).then(function () {
             btn.disabled = false; btn.textContent = 'Send enquiry';
+          });
+        });
+
+        // attribution.js clears ?text= from wa.me links when the page loads, so
+        // the message is written back on the click itself. Its reference code
+        // and whatsapp_clicked event still fire as normal.
+        document.querySelectorAll('.bldg-wa').forEach(function (a) {
+          a.addEventListener('click', function () {
+            var b = a.getAttribute('data-building');
+            var msg = "Hi, I'm interested in office space at " + b +
+                      " in Business Bay. Could you share what is available?";
+            a.href = a.href.split('?')[0] + '?text=' + encodeURIComponent(msg);
+            if (window.posthog) {
+              posthog.capture('building_whatsapp_clicked', { building: b });
+            }
           });
         });
 

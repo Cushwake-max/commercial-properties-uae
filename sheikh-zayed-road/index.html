@@ -65,6 +65,140 @@
     <meta name="twitter:title" content="Office for Rent on Sheikh Zayed Road Dubai | Cushman &amp; Wakefield Core">
     <meta name="twitter:description" content="Find office space for rent on Sheikh Zayed Road with Cushman &amp; Wakefield Core. Established, connected and competitive — our commercial team will shortlist suitable towers.">
     <meta name="twitter:image" content="https://commercialpropertiesintheuae.ae/sheikh-zayed-road/images/hero.jpg">
+
+    <style id="availability-styles">
+      .availability-section { padding: 64px 0; background: #F8F9FA; }
+      .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
+      .availability-sub { margin: 10px 0 0; color: #5b5870; font-size: 14px; }
+      .bldg-grid {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px; margin-top: 30px;
+      }
+      .bldg-card {
+        display: flex; flex-direction: column;
+        border: 1px solid #dedbe8; background: #fff; overflow: hidden;
+      }
+      .bldg-media { position: relative; aspect-ratio: 16 / 10;
+                    background: #eceaf2; overflow: hidden; }
+      .bldg-media img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+        transition: transform .4s ease;
+      }
+      .bldg-card:hover .bldg-media img { transform: scale(1.04); }
+      .bldg-exclusive {
+        position: absolute; top: 12px; left: 12px; z-index: 2;
+        padding: 5px 11px; background: #E30613; color: #fff;
+        font-size: 10px; font-weight: 700; letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .bldg-body { display: flex; flex-direction: column; flex: 1;
+                   padding: 24px 26px 22px; }
+      .bldg-card h3 { margin: 0 0 4px; color: #1D1740; font-size: 18px; line-height: 1.3; }
+      .bldg-area { margin: 0 0 14px; color: #545859; font-size: 12px;
+                   text-transform: uppercase; letter-spacing: .06em; }
+      .bldg-blurb { margin: 0 0 18px; color: #5b5870; font-size: 13px; line-height: 1.65; }
+      .bldg-facts { margin: 0 0 22px; padding: 16px 0 4px; border-top: 1px solid #ececf2; }
+      .bldg-facts > div { display: flex; justify-content: space-between;
+                          align-items: baseline; gap: 12px; padding: 5px 0; }
+      .bldg-facts dt { margin: 0; color: #545859; font-size: 12px; }
+      .bldg-facts dd { margin: 0; color: #1D1740; font-size: 13px; font-weight: 600;
+                       text-align: right; }
+      .bldg-facts dd span { color: #545859; font-weight: 400; }
+      .bldg-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+      .bldg-wa {
+        display: flex; align-items: center; justify-content: center; gap: 9px;
+        min-height: 48px; padding: 12px 16px; text-decoration: none;
+        background: #fff; border: 1px solid #25D366; color: #128C46;
+        font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+        letter-spacing: .02em; transition: background .15s ease, color .15s ease;
+      }
+      .bldg-wa i { font-size: 17px; }
+      .bldg-wa:hover { background: #25D366; color: #fff; }
+      .bldg-cta {
+        width: 100%; min-height: 48px; padding: 12px 16px; border: 0; cursor: pointer;
+        background: #E30613; color: #fff; font-family: 'Montserrat', sans-serif;
+        font-size: 13px; font-weight: 600; letter-spacing: .02em;
+        transition: background .15s ease;
+      }
+      .bldg-cta:hover { background: #b2050f; }
+
+      body[data-intent="sale"] .availability-section { display: none; }
+
+      /* ---------------- modal ---------------- */
+      .bldg-modal { position: fixed; inset: 0; z-index: 9999;
+                    display: flex; align-items: center; justify-content: center; }
+      .bldg-modal[hidden] { display: none; }
+      .bldg-modal__backdrop { position: absolute; inset: 0;
+                              background: rgba(15, 11, 40, .72); }
+      .bldg-modal__panel {
+        position: relative; width: min(520px, 92vw); max-height: 92vh;
+        overflow-y: auto; background: #fff; padding: 30px 34px 34px;
+        font-family: 'Montserrat', sans-serif;
+        box-shadow: 0 24px 70px rgba(0,0,0,.32);
+      }
+      .bldg-modal__close {
+        position: absolute; top: 10px; right: 14px; border: 0; background: none;
+        font-size: 30px; line-height: 1; color: #545859; cursor: pointer;
+        width: 44px; height: 44px; display: flex; align-items: center;
+        justify-content: center;
+      }
+      .bldg-modal__close:hover { color: #1D1740; }
+      .bldg-modal__kicker { margin: 0 0 6px; color: #E30613; font-size: 11px;
+                            font-weight: 700; letter-spacing: .08em;
+                            text-transform: uppercase; }
+      .bldg-modal__head h2 { margin: 0 0 10px; color: #1D1740; font-size: 22px;
+                             line-height: 1.25; }
+      .bldg-modal__building {
+        margin: 0 0 20px; padding: 11px 14px; background: #F4F3F8;
+        border-left: 3px solid #E30613; color: #1D1740;
+        font-size: 15px; font-weight: 700;
+      }
+      .bldg-modal__form { display: flex; flex-direction: column; gap: 13px; }
+      .bldg-modal__form[hidden], .bldg-modal__head[hidden] { display: none !important; }
+      .bldg-modal__done p { margin: 0; padding: 8px 0 4px; color: #1D1740;
+                            font-size: 16px; line-height: 1.65; }
+      .bldg-modal__form label { display: flex; flex-direction: column; gap: 6px;
+                                color: #1D1740; font-size: 11px; font-weight: 600;
+                                letter-spacing: .05em; text-transform: uppercase; }
+      .bldg-modal__form input[type=text],
+      .bldg-modal__form input[type=tel],
+      .bldg-modal__form input[type=email],
+      .bldg-modal__form select,
+      .bldg-modal__form textarea {
+        min-height: 44px; padding: 11px 13px; border: 1px solid #d8d5e2; background: #fff;
+        font-family: inherit; font-size: 14px; color: #1D1740;
+        font-weight: 400; letter-spacing: normal; text-transform: none;
+      }
+      .bldg-modal__form input:focus, .bldg-modal__form select:focus,
+      .bldg-modal__form textarea:focus { outline: 2px solid #1D1740; outline-offset: 1px; }
+      .bldg-modal__form input[aria-invalid="true"] { border-color: #E30613; }
+      .bldg-modal__consent { flex-direction: row !important; align-items: flex-start;
+                             gap: 9px !important; text-transform: none !important;
+                             letter-spacing: normal !important; font-weight: 400 !important;
+                             font-size: 12px !important; color: #5b5870 !important;
+                             line-height: 1.55; }
+      .bldg-modal__consent input { margin-top: 2px; flex: 0 0 auto; }
+      .bldg-modal__submit {
+        margin-top: 4px; min-height: 48px; padding: 14px 18px; border: 0; cursor: pointer;
+        background: #E30613; color: #fff; font-family: inherit;
+        font-size: 14px; font-weight: 700; letter-spacing: .02em;
+      }
+      .bldg-modal__submit:hover { background: #b2050f; }
+      .bldg-modal__submit[disabled] { opacity: .6; cursor: default; }
+      .bldg-modal__error { margin: 0; color: #E30613; font-size: 12px; }
+      body.bldg-modal-open { overflow: hidden; }
+
+      @media (max-width: 980px) {
+        .bldg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 640px) {
+        .availability-section { padding: 44px 0; }
+        .bldg-grid { grid-template-columns: 1fr; }
+        .bldg-media { aspect-ratio: 16 / 9; }
+        .bldg-modal__panel { width: 100vw; max-height: 100vh; height: 100vh;
+                             padding: 26px 22px 40px; }
+      }
+    </style>
 </head>
 
 <body data-intent="rent" data-area="Sheikh Zayed Road">
@@ -190,6 +324,239 @@
                     </aside>
                 </div>
             </section>
+        <section class="availability-section" id="availability" aria-labelledby="availability-title">
+          <div class="availability-inner">
+            <div class="intent-summary-heading">
+              <h2 id="availability-title">Offices available now on Sheikh Zayed Road</h2>
+              <p class="availability-sub">Availability moves quickly and rents
+                 shift with the market. Speak to our Sheikh Zayed Road team for
+                 today&rsquo;s terms and a shortlist that fits.</p>
+            </div>
+            <div class="bldg-grid">
+          <article class="bldg-card">
+            <div class="bldg-media"><span class="bldg-exclusive">Exclusive</span><picture><source srcset="images/buildings/city-tower.webp" type="image/webp"><img src="images/buildings/city-tower.jpg" width="800" height="500" alt="Office space in City Tower, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>City Tower</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Exclusively ours &mdash; from a single suite to a 16,419 sqft whole floor.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>1,141 &ndash; 16,419 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 498,617 &ndash; 7,546,143 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="City Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="City Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about City Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/millennium-executive-tower.webp" type="image/webp"><img src="images/buildings/millennium-executive-tower.jpg" width="800" height="500" alt="Office space in Millennium Executive Tower, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Millennium Executive Tower</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Efficient floors from AED 165,750. Space that works, without the waste.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>6 offices</dd></div>
+                <div><dt>Size</dt><dd>975 &ndash; 1,885 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 165,750 &ndash; 412,500 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Millennium Executive Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Millennium Executive Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Millennium Executive Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/burj-al-salam-tower.webp" type="image/webp"><img src="images/buildings/burj-al-salam-tower.jpg" width="800" height="500" alt="Office space in Burj Al Salam Tower, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Burj Al Salam Tower</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">A landmark address, with floors big enough for the whole team.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>1,528 &ndash; 11,096 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 846,878 &ndash; 2,774,000 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Burj Al Salam Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Burj Al Salam Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Burj Al Salam Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/nassima-tower.webp" type="image/webp"><img src="images/buildings/nassima-tower.jpg" width="800" height="500" alt="Office space in Nassima Tower, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Nassima Tower</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Grow from 817 sqft to 4,232 without ever changing address.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>8 offices</dd></div>
+                <div><dt>Size</dt><dd>817 &ndash; 4,232 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 196,080 &ndash; 1,015,680 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Nassima Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Nassima Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Nassima Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/al-moosa-tower-2.webp" type="image/webp"><img src="images/buildings/al-moosa-tower-2.jpg" width="800" height="500" alt="Office space in Al Moosa Tower 2, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Al Moosa Tower 2</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Take one floor or several &mdash; matching plates that expand as you do.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>1,332 &ndash; 4,006 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 226,440 &ndash; 620,930 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Al Moosa Tower 2">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Al Moosa Tower 2"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Al Moosa Tower 2 on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/fairmont-dubai.webp" type="image/webp"><img src="images/buildings/fairmont-dubai.jpg" width="800" height="500" alt="Office space in Fairmont Dubai, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Fairmont Dubai</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">A Fairmont address from 714 sqft. Impress them before you speak.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>714 &ndash; 2,981 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 178,500 &ndash; 1,043,350 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Fairmont Dubai">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Fairmont Dubai"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Fairmont Dubai on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/emaar-business-park-building-3.webp" type="image/webp"><img src="images/buildings/emaar-business-park-building-3.jpg" width="800" height="500" alt="Office space in Emaar Business Park Building 3, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Emaar Business Park Building 3</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Business-park calm with its own parking, moments off the highway.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>920 &ndash; 2,937 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 444,570 &ndash; 1,588,000 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Emaar Business Park Building 3">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Emaar Business Park Building 3"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Emaar Business Park Building 3 on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/the-h-hotel.webp" type="image/webp"><img src="images/buildings/the-h-hotel.jpg" width="800" height="500" alt="Office space in The H Hotel And Office Tower, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>The H Hotel And Office Tower</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Start at 406 sqft or take a full floor. Room to begin, room to grow.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>406 &ndash; 12,235 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 209,900 &ndash; 3,181,100 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="The H Hotel And Office Tower">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="The H Hotel And Office Tower"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about The H Hotel And Office Tower on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/al-moosa-tower-1.webp" type="image/webp"><img src="images/buildings/al-moosa-tower-1.jpg" width="800" height="500" alt="Office space in Al Moosa Tower 1, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Al Moosa Tower 1</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">The easiest way onto Sheikh Zayed Road &mdash; from AED 75,450 a year.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>5 offices</dd></div>
+                <div><dt>Size</dt><dd>503 &ndash; 3,866 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 75,450 &ndash; 541,240 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Al Moosa Tower 1">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Al Moosa Tower 1"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Al Moosa Tower 1 on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/millennium-plaza.webp" type="image/webp"><img src="images/buildings/millennium-plaza.jpg" width="800" height="500" alt="Office space in Millennium Plaza Downtown Hotel, Sheikh Zayed Road, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Millennium Plaza Downtown Hotel</h3>
+              <p class="bldg-area">Sheikh Zayed Road, Dubai</p>
+              <p class="bldg-blurb">Shell-and-core floors to 47,416 sqft. Build it exactly how you want it.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>9 offices</dd></div>
+                <div><dt>Size</dt><dd>1,894 &ndash; 47,416 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 530,449 &ndash; 13,276,676 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Millennium Plaza Downtown Hotel">Enquire about this building</button>
+                <a class="bldg-wa" href="https://wa.me/971567121822" data-building="Millennium Plaza Downtown Hotel"
+                   target="_blank" rel="noopener"
+                   aria-label="Enquire about Millennium Plaza Downtown Hotel on WhatsApp">
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            </div>
+          </article>
+            </div>
+          </div>
+        </section>
+
 
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
@@ -378,6 +745,192 @@
             src="https://px.ads.linkedin.com/collect/?pid=8880705&fmt=gif" />
     </noscript>
     <!-- End LinkedIn Insight Tag -->
+
+        <div class="bldg-modal" id="bldgModal" hidden>
+          <div class="bldg-modal__backdrop" data-close></div>
+          <div class="bldg-modal__panel" role="dialog" aria-modal="true"
+               aria-labelledby="bldgModalTitle">
+            <button type="button" class="bldg-modal__close" data-close
+                    aria-label="Close">&times;</button>
+            <div class="bldg-modal__head">
+              <p class="bldg-modal__kicker">Sheikh Zayed Road rental enquiry</p>
+              <h2 id="bldgModalTitle">Enquire about this building</h2>
+              <p class="bldg-modal__building" id="bldgModalBuilding"></p>
+            </div>
+            <form class="bldg-modal__form" id="bldgModalForm"
+                  action="https://formspree.io/f/mnjerajl" method="POST" novalidate>
+              <input type="hidden" name="_subject" value="Sheikh Zayed Road enquiry">
+              <input type="hidden" name="building_enquired" value="">
+              <input type="hidden" name="enquiry_type" value="rent">
+              <input type="hidden" name="landing_experience" value="sheikh-zayed-road">
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+                     style="position:absolute;left:-9999px" aria-hidden="true">
+              <label>Contact name
+                <input type="text" name="name" required placeholder="Your full name">
+              </label>
+              <label>Contact number
+                <input type="tel" name="mobile" inputmode="tel" required placeholder="+971 50 123 4567">
+              </label>
+              <label>Email
+                <input type="email" name="email" required placeholder="name@company.com">
+              </label>
+              <label>Preferred move-in (optional)
+                <select name="preferred_timeline">
+                  <option value="">Select timeline</option>
+                  <option value="immediate">Immediate</option>
+                  <option value="1-3-months">1&ndash;3 months</option>
+                  <option value="3-6-months">3&ndash;6 months</option>
+                  <option value="6-months-plus">6+ months</option>
+                </select>
+              </label>
+              <label>What are you looking for? (optional)
+                <textarea name="description" rows="2"
+                          placeholder="Size, fit-out, number of people"></textarea>
+              </label>
+              <label class="bldg-modal__consent">
+                <input type="checkbox" name="consent" required>
+                <span>I agree to be contacted by Cushman &amp; Wakefield Core about
+                      this enquiry.</span>
+              </label>
+              <button type="submit" class="bldg-modal__submit">Send enquiry</button>
+              <p class="bldg-modal__error" id="bldgModalError" role="alert"
+                 aria-live="polite" hidden></p>
+            </form>
+            <div class="bldg-modal__done" id="bldgModalDone" hidden>
+              <p>Thank you. Your enquiry has been received. A member of the
+                 Cushman &amp; Wakefield Core team will contact you shortly.</p>
+            </div>
+          </div>
+        </div>
+
+    <script id="availability-js">
+      (function () {
+        var modal  = document.getElementById('bldgModal');
+        var form   = document.getElementById('bldgModalForm');
+        var nameEl = document.getElementById('bldgModalBuilding');
+        var errEl  = document.getElementById('bldgModalError');
+        var doneEl = document.getElementById('bldgModalDone');
+        var head   = modal.querySelector('.bldg-modal__head');
+        var lastFocus = null, current = '';
+
+        function open(building) {
+          current = building;
+          nameEl.textContent = building;
+          form.querySelector('[name="building_enquired"]').value = building;
+          var intent = document.body.getAttribute('data-intent') || 'rent';
+          form.querySelector('[name="enquiry_type"]').value = intent;
+          form.querySelector('[name="_subject"]').value =
+            'Sheikh Zayed Road ' + (intent === 'sale' ? 'sale' : 'rental') +
+            ' enquiry - ' + building;
+          form.hidden = false; head.hidden = false;
+          doneEl.hidden = true; errEl.hidden = true;
+          modal.hidden = false;
+          document.body.classList.add('bldg-modal-open');
+          lastFocus = document.activeElement;
+          var first = form.querySelector('input[name="name"]');
+          if (first) setTimeout(function () { first.focus(); }, 60);
+          if (window.posthog) {
+            posthog.capture('building_enquiry_opened', { building: building });
+          }
+        }
+
+        function close() {
+          modal.hidden = true;
+          document.body.classList.remove('bldg-modal-open');
+          if (lastFocus && lastFocus.focus) lastFocus.focus();
+        }
+
+        document.querySelectorAll('.bldg-cta').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            open(btn.getAttribute('data-building'));
+          });
+        });
+        modal.querySelectorAll('[data-close]').forEach(function (el) {
+          el.addEventListener('click', close);
+        });
+        document.addEventListener('keydown', function (e) {
+          if (modal.hidden) return;
+          if (e.key === 'Escape') { close(); return; }
+          if (e.key !== 'Tab') return;
+          var panel = modal.querySelector('.bldg-modal__panel');
+          var f = [].slice.call(panel.querySelectorAll(
+            'a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])'
+          )).filter(function (el) { return !el.disabled && el.offsetParent !== null; });
+          if (!f.length) return;
+          var first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault(); last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault(); first.focus();
+          }
+        });
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          errEl.hidden = true;
+          var missing = [];
+          ['name', 'mobile', 'email'].forEach(function (n) {
+            var el = form.querySelector('[name="' + n + '"]');
+            var bad = !el.value.trim();
+            el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+            if (bad) missing.push(n);
+          });
+          if (!form.querySelector('[name="consent"]').checked) missing.push('consent');
+          if (missing.length) {
+            errEl.textContent = 'Please complete your name, number, email and consent.';
+            errEl.hidden = false;
+            if (window.posthog) {
+              posthog.capture('form_validation_error',
+                { building: current, missing: missing.join(',') });
+            }
+            return;
+          }
+          var btn = form.querySelector('.bldg-modal__submit');
+          btn.disabled = true; btn.textContent = 'Sending...';
+          if (window.posthog) posthog.capture('form_started', { building: current });
+          fetch(form.action, {
+            method: 'POST', body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          }).then(function (r) {
+            if (!r.ok) throw new Error('bad status ' + r.status);
+            form.hidden = true; head.hidden = true; doneEl.hidden = false;
+            if (window.posthog) {
+              posthog.capture('form_submitted',
+                { building: current, landing_experience: 'sheikh-zayed-road' });
+            }
+          }).catch(function () {
+            errEl.textContent =
+              'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
+            errEl.hidden = false;
+          }).then(function () {
+            btn.disabled = false; btn.textContent = 'Send enquiry';
+          });
+        });
+
+        // attribution.js clears ?text= from wa.me links when the page loads, so
+        // the message is written back on the click itself. Its reference code
+        // and whatsapp_clicked event still fire as normal.
+        document.querySelectorAll('.bldg-wa').forEach(function (a) {
+          a.addEventListener('click', function () {
+            var b = a.getAttribute('data-building');
+            var msg = "Hi, I'm interested in office space at " + b +
+                      " on Sheikh Zayed Road. Could you share what is available?";
+            a.href = a.href.split('?')[0] + '?text=' + encodeURIComponent(msg);
+            if (window.posthog) {
+              // Distinct from whatsapp_clicked so existing counts stay clean.
+              posthog.capture('building_whatsapp_clicked', { building: b });
+            }
+          });
+        });
+
+        document.querySelectorAll('.bldg-media img').forEach(function (im) {
+          im.addEventListener('error', function () {
+            im.parentElement.classList.add('bldg-media--empty');
+            im.remove();
+          });
+        });
+      })();
+    </script>
 </body>
 
 </html>
