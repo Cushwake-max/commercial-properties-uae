@@ -185,6 +185,128 @@
                              padding: 26px 22px 40px; }
       }
     </style>
+
+    <style id="availability-styles">
+      .availability-section { padding: 64px 0; background: #F8F9FA; }
+      .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
+      .availability-sub { margin: 10px 0 0; color: #5b5870; font-size: 14px; }
+      .bldg-grid {
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px; margin-top: 30px;
+      }
+      .bldg-card {
+        display: flex; flex-direction: column;
+        border: 1px solid #dedbe8; background: #fff; overflow: hidden;
+      }
+      .bldg-media { aspect-ratio: 16 / 10; background: #eceaf2; overflow: hidden; }
+      .bldg-media img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+        transition: transform .4s ease;
+      }
+      .bldg-card:hover .bldg-media img { transform: scale(1.04); }
+      .bldg-body { display: flex; flex-direction: column; flex: 1;
+                   padding: 24px 26px 22px; }
+      .bldg-card h3 { margin: 0 0 4px; color: #1D1740; font-size: 18px; line-height: 1.3; }
+      .bldg-area { margin: 0 0 14px; color: #545859; font-size: 12px;
+                   text-transform: uppercase; letter-spacing: .06em; }
+      .bldg-blurb { margin: 0 0 18px; color: #5b5870; font-size: 13px; line-height: 1.65; }
+      .bldg-facts { margin: 0 0 22px; padding: 16px 0 4px; border-top: 1px solid #ececf2; }
+      .bldg-facts > div { display: flex; justify-content: space-between;
+                          align-items: baseline; gap: 12px; padding: 5px 0; }
+      .bldg-facts dt { margin: 0; color: #545859; font-size: 12px; }
+      .bldg-facts dd { margin: 0; color: #1D1740; font-size: 13px; font-weight: 600;
+                       text-align: right; }
+      .bldg-facts dd span { color: #545859; font-weight: 400; }
+      .bldg-actions { margin-top: auto; }
+      .bldg-cta {
+        width: 100%; min-height: 48px; padding: 12px 16px; border: 0; cursor: pointer;
+        background: #E30613; color: #fff; font-family: 'Montserrat', sans-serif;
+        font-size: 13px; font-weight: 600; letter-spacing: .02em;
+        transition: background .15s ease;
+      }
+      .bldg-cta:hover { background: #b2050f; }
+
+      body[data-intent="sale"] .availability-section { display: none; }
+
+      /* ---------------- modal ---------------- */
+      .bldg-modal { position: fixed; inset: 0; z-index: 9999;
+                    display: flex; align-items: center; justify-content: center; }
+      .bldg-modal[hidden] { display: none; }
+      .bldg-modal__backdrop { position: absolute; inset: 0;
+                              background: rgba(15, 11, 40, .72); }
+      .bldg-modal__panel {
+        position: relative; width: min(520px, 92vw); max-height: 92vh;
+        overflow-y: auto; background: #fff; padding: 30px 34px 34px;
+        font-family: 'Montserrat', sans-serif;
+        box-shadow: 0 24px 70px rgba(0,0,0,.32);
+      }
+      .bldg-modal__close {
+        position: absolute; top: 10px; right: 14px; border: 0; background: none;
+        font-size: 30px; line-height: 1; color: #545859; cursor: pointer;
+        width: 44px; height: 44px; display: flex; align-items: center;
+        justify-content: center;
+      }
+      .bldg-modal__close:hover { color: #1D1740; }
+      .bldg-modal__kicker { margin: 0 0 6px; color: #E30613; font-size: 11px;
+                            font-weight: 700; letter-spacing: .08em;
+                            text-transform: uppercase; }
+      .bldg-modal__head h2 { margin: 0 0 10px; color: #1D1740; font-size: 22px;
+                             line-height: 1.25; }
+      .bldg-modal__building {
+        margin: 0; padding: 11px 14px; background: #F4F3F8;
+        border-left: 3px solid #E30613; color: #1D1740;
+        font-size: 15px; font-weight: 700; margin-bottom: 20px;
+      }
+      .bldg-modal__summary { margin: 0 0 20px; padding: 7px 14px 11px;
+                             background: #F4F3F8; border-left: 3px solid #E30613;
+                             color: #5b5870; font-size: 12px; }
+      .bldg-modal__form { display: flex; flex-direction: column; gap: 13px; }
+      .bldg-modal__form label { display: flex; flex-direction: column; gap: 6px;
+                                color: #1D1740; font-size: 11px; font-weight: 600;
+                                letter-spacing: .05em; text-transform: uppercase; }
+      .bldg-modal__form input[type=text],
+      .bldg-modal__form input[type=tel],
+      .bldg-modal__form input[type=email],
+      .bldg-modal__form select,
+      .bldg-modal__form textarea {
+        min-height: 44px; padding: 11px 13px; border: 1px solid #d8d5e2; background: #fff;
+        font-family: inherit; font-size: 14px; color: #1D1740;
+        font-weight: 400; letter-spacing: normal; text-transform: none;
+      }
+      .bldg-modal__form input:focus, .bldg-modal__form select:focus,
+      .bldg-modal__form textarea:focus { outline: 2px solid #1D1740; outline-offset: 1px; }
+      .bldg-modal__form input[aria-invalid="true"] { border-color: #E30613; }
+      .bldg-modal__consent { flex-direction: row !important; align-items: flex-start;
+                             gap: 9px !important; text-transform: none !important;
+                             letter-spacing: normal !important; font-weight: 400 !important;
+                             font-size: 12px !important; color: #5b5870 !important;
+                             line-height: 1.55; }
+      .bldg-modal__consent input { margin-top: 2px; flex: 0 0 auto; }
+      .bldg-modal__submit {
+        margin-top: 4px; min-height: 48px; padding: 14px 18px; border: 0; cursor: pointer;
+        background: #E30613; color: #fff; font-family: inherit;
+        font-size: 14px; font-weight: 700; letter-spacing: .02em;
+      }
+      .bldg-modal__submit:hover { background: #b2050f; }
+      .bldg-modal__submit[disabled] { opacity: .6; cursor: default; }
+      .bldg-modal__error { margin: 0; color: #E30613; font-size: 12px; }
+      .bldg-modal__done h3 { margin: 0 0 10px; color: #1D1740; font-size: 20px; }
+      .bldg-modal__done p { margin: 0 0 20px; color: #5b5870; font-size: 14px;
+                            line-height: 1.6; }
+      body.bldg-modal-open { overflow: hidden; }
+
+      @media (max-width: 980px) {
+        .bldg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 640px) {
+        .availability-section { padding: 44px 0; }
+        .bldg-grid { grid-template-columns: 1fr; }
+        .bldg-media { aspect-ratio: 16 / 9; }
+        /* full-screen sheet on mobile - a centred dialog traps the keyboard */
+        .bldg-modal__panel { width: 100vw; max-height: 100vh; height: 100vh;
+                             padding: 26px 22px 40px; }
+      }
+    </style>
 </head>
 
 <body data-intent="rent" data-area="Business Bay">
@@ -316,6 +438,115 @@
                     </aside>
                 </div>
             </section>
+        <section class="availability-section" id="availability" aria-labelledby="availability-title">
+          <div class="availability-inner">
+            <div class="intent-summary-heading">
+              <h2 id="availability-title">Offices available now in Business Bay</h2>
+              <p class="availability-sub">63 offices across
+                 6 buildings. Rents shown are annual, as listed by
+                 Cushman &amp; Wakefield Core.</p>
+            </div>
+            <div class="bldg-grid">
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/ubora-tower-1.webp" type="image/webp"><img src="images/buildings/ubora-tower-1.jpg" width="800" height="500" alt="Office space in U Bora Tower 1, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>U Bora Tower 1</h3>
+              <p class="bldg-area">Business Bay, Dubai</p>
+              <p class="bldg-blurb">Twin-tower address on the Bay Avenue side of Business Bay.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>5 offices</dd></div>
+                <div><dt>Size</dt><dd>807 &ndash; 3,716 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 241,950 &ndash; 1,114,902 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="U Bora Tower 1">Enquire about this building</button>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/one-by-omniyat.webp" type="image/webp"><img src="images/buildings/one-by-omniyat.jpg" width="800" height="500" alt="Office space in One By Omniyat, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>One By Omniyat</h3>
+              <p class="bldg-area">Business Bay, Dubai</p>
+              <p class="bldg-blurb">Larger floorplates — every available unit is over 1,700 sqft.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>4 offices</dd></div>
+                <div><dt>Size</dt><dd>1,701 &ndash; 1,711 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 821,900 &ndash; 826,900 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="One By Omniyat">Enquire about this building</button>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/single-business-tower.webp" type="image/webp"><img src="images/buildings/single-business-tower.jpg" width="800" height="500" alt="Office space in Single Business Tower, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Single Business Tower</h3>
+              <p class="bldg-area">Business Bay, Dubai</p>
+              <p class="bldg-blurb">Sheikh Zayed Road frontage, with whole floors to 10,340 sqft.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>12 offices</dd></div>
+                <div><dt>Size</dt><dd>935 &ndash; 10,340 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 243,100 &ndash; 2,791,800 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Single Business Tower">Enquire about this building</button>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/blue-bay-tower.webp" type="image/webp"><img src="images/buildings/blue-bay-tower.jpg" width="800" height="500" alt="Office space in Blue Bay Tower, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Blue Bay Tower</h3>
+              <p class="bldg-area">Business Bay, Dubai</p>
+              <p class="bldg-blurb">The broadest size range on this page, from 541 sqft.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>14 offices</dd></div>
+                <div><dt>Size</dt><dd>541 &ndash; 2,275 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 108,200 &ndash; 455,000 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Blue Bay Tower">Enquire about this building</button>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/capital-golden-tower.webp" type="image/webp"><img src="images/buildings/capital-golden-tower.jpg" width="800" height="500" alt="Office space in Capital Golden Tower, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Capital Golden Tower</h3>
+              <p class="bldg-area">Business Bay, Dubai</p>
+              <p class="bldg-blurb">Mid-size through to full-floor units, 1,207 to 4,628 sqft.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>7 offices</dd></div>
+                <div><dt>Size</dt><dd>1,207 &ndash; 4,628 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 187,085 &ndash; 1,018,160 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Capital Golden Tower">Enquire about this building</button>
+              </div>
+            </div>
+          </article>
+          <article class="bldg-card">
+            <div class="bldg-media"><picture><source srcset="images/buildings/magnum-opus-bay.webp" type="image/webp"><img src="images/buildings/magnum-opus-bay.jpg" width="800" height="500" alt="Office space in Magnum Opus Bay, Business Bay, Dubai" loading="lazy" decoding="async"></picture></div>
+            <div class="bldg-body">
+              <h3>Magnum Opus Bay</h3>
+              <p class="bldg-area">Business Bay, Dubai</p>
+              <p class="bldg-blurb">The most units currently available of the six buildings.</p>
+              <dl class="bldg-facts">
+                <div><dt>Available</dt><dd>21 offices</dd></div>
+                <div><dt>Size</dt><dd>555 &ndash; 2,008 sqft</dd></div>
+                <div><dt>Rent</dt><dd>AED 208,125 &ndash; 753,000 <span>/year</span></dd></div>
+              </dl>
+              <div class="bldg-actions">
+                <button type="button" class="bldg-cta" data-building="Magnum Opus Bay">Enquire about this building</button>
+              </div>
+            </div>
+          </article>
+            </div>
+          </div>
+        </section>
+
         <section class="availability-section" id="availability" aria-labelledby="availability-title">
           <div class="availability-inner">
             <div class="intent-summary-heading">
@@ -696,6 +927,186 @@
           form.querySelector('[name="building_enquired"]').value = building;
           form.querySelector('[name="_subject"]').value =
             'Business Bay enquiry - ' + building;
+          form.hidden = false; doneEl.hidden = true; errEl.hidden = true;
+          modal.hidden = false;
+          document.body.classList.add('bldg-modal-open');
+          lastFocus = document.activeElement;
+          var first = form.querySelector('input[name="name"]');
+          if (first) setTimeout(function () { first.focus(); }, 60);
+          if (window.posthog) {
+            posthog.capture('building_enquiry_opened', { building: building });
+          }
+        }
+
+        function close() {
+          modal.hidden = true;
+          document.body.classList.remove('bldg-modal-open');
+          if (lastFocus && lastFocus.focus) lastFocus.focus();
+        }
+
+        document.querySelectorAll('.bldg-cta').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            open(btn.getAttribute('data-building'));
+          });
+        });
+        modal.querySelectorAll('[data-close]').forEach(function (el) {
+          el.addEventListener('click', close);
+        });
+        document.addEventListener('keydown', function (e) {
+          if (modal.hidden) return;
+          if (e.key === 'Escape') { close(); return; }
+          if (e.key !== 'Tab') return;
+          // Keep focus inside the dialog while it is open.
+          var panel = modal.querySelector('.bldg-modal__panel');
+          var f = [].slice.call(panel.querySelectorAll(
+            'a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])'
+          )).filter(function (el) {
+            return !el.disabled && el.offsetParent !== null;
+          });
+          if (!f.length) return;
+          var first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault(); last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault(); first.focus();
+          }
+        });
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          errEl.hidden = true;
+          var missing = [];
+          ['name', 'mobile', 'email'].forEach(function (n) {
+            var el = form.querySelector('[name="' + n + '"]');
+            var bad = !el.value.trim();
+            el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+            if (bad) missing.push(n);
+          });
+          var consent = form.querySelector('[name="consent"]');
+          if (!consent.checked) missing.push('consent');
+          if (missing.length) {
+            errEl.textContent = 'Please complete your name, number, email and consent.';
+            errEl.hidden = false;
+            if (window.posthog) {
+              posthog.capture('form_validation_error',
+                { building: current, missing: missing.join(',') });
+            }
+            return;
+          }
+          var btn = form.querySelector('.bldg-modal__submit');
+          btn.disabled = true; btn.textContent = 'Sending...';
+          if (window.posthog) {
+            posthog.capture('form_started', { building: current });
+          }
+          fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          }).then(function (r) {
+            if (!r.ok) throw new Error('bad status ' + r.status);
+            form.hidden = true; doneEl.hidden = false;
+            doneNm.textContent = current;
+            if (window.posthog) {
+              posthog.capture('form_submitted',
+                { building: current, landing_experience: 'business-bay' });
+            }
+          }).catch(function () {
+            errEl.textContent =
+              'Sorry, that did not send. Please call +971 4 245 2100 or try again.';
+            errEl.hidden = false;
+          }).then(function () {
+            btn.disabled = false; btn.textContent = 'Send enquiry';
+          });
+        });
+
+        // A dead photo is worse than none: hide the frame if it fails to load.
+        document.querySelectorAll('.bldg-media img').forEach(function (im) {
+          im.addEventListener('error', function () {
+            im.parentElement.classList.add('bldg-media--empty');
+            im.remove();
+          });
+        });
+      })();
+    </script>
+
+        <div class="bldg-modal" id="bldgModal" hidden>
+          <div class="bldg-modal__backdrop" data-close></div>
+          <div class="bldg-modal__panel" role="dialog" aria-modal="true"
+               aria-labelledby="bldgModalTitle">
+            <button type="button" class="bldg-modal__close" data-close
+                    aria-label="Close">&times;</button>
+            <div class="bldg-modal__head">
+              <p class="bldg-modal__kicker">Business Bay rental enquiry</p>
+              <h2 id="bldgModalTitle">Enquire about this building</h2>
+              <p class="bldg-modal__building" id="bldgModalBuilding"></p>
+            </div>
+            <form class="bldg-modal__form" id="bldgModalForm"
+                  action="https://formspree.io/f/mvzeypzq" method="POST" novalidate>
+              <input type="hidden" name="_subject" value="Business Bay enquiry">
+              <input type="hidden" name="building_enquired" value="">
+              <input type="hidden" name="enquiry_type" value="rent">
+              <input type="hidden" name="landing_experience" value="business-bay">
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+                     style="position:absolute;left:-9999px" aria-hidden="true">
+              <label>Contact name
+                <input type="text" name="name" required placeholder="Your full name">
+              </label>
+              <label>Contact number
+                <input type="tel" name="mobile" inputmode="tel" required placeholder="+971 50 123 4567">
+              </label>
+              <label>Email
+                <input type="email" name="email" required placeholder="name@company.com">
+              </label>
+              <label>Preferred move-in (optional)
+                <select name="preferred_timeline">
+                  <option value="">Select timeline</option>
+                  <option value="immediate">Immediate</option>
+                  <option value="1-3-months">1&ndash;3 months</option>
+                  <option value="3-6-months">3&ndash;6 months</option>
+                  <option value="6-months-plus">6+ months</option>
+                </select>
+              </label>
+              <label>What are you looking for? (optional)
+                <textarea name="description" rows="2"
+                          placeholder="Size, fit-out, number of people"></textarea>
+              </label>
+              <label class="bldg-modal__consent">
+                <input type="checkbox" name="consent" required>
+                <span>I agree to be contacted by Cushman &amp; Wakefield Core about
+                      this enquiry.</span>
+              </label>
+              <button type="submit" class="bldg-modal__submit">Send enquiry</button>
+              <p class="bldg-modal__error" id="bldgModalError" role="alert"
+                 aria-live="polite" hidden></p>
+            </form>
+            <div class="bldg-modal__done" id="bldgModalDone" hidden>
+              <h3>Thank you &mdash; enquiry received</h3>
+              <p>A member of the Cushman &amp; Wakefield Core team will contact you
+                 about <strong id="bldgModalDoneName"></strong>.</p>
+              <button type="button" class="bldg-modal__submit" data-close>Close</button>
+            </div>
+          </div>
+        </div>
+
+    <script id="availability-js">
+      (function () {
+        var modal   = document.getElementById('bldgModal');
+        var form    = document.getElementById('bldgModalForm');
+        var nameEl  = document.getElementById('bldgModalBuilding');
+        var errEl   = document.getElementById('bldgModalError');
+        var doneEl  = document.getElementById('bldgModalDone');
+        var doneNm  = document.getElementById('bldgModalDoneName');
+        var lastFocus = null, current = '';
+
+        function open(building) {
+          current = building;
+          nameEl.textContent = building;
+          form.querySelector('[name="building_enquired"]').value = building;
+          var intent = document.body.getAttribute('data-intent') || 'rent';
+          form.querySelector('[name="enquiry_type"]').value = intent;
+          form.querySelector('[name="_subject"]').value =
+            'Business Bay ' + (intent === 'sale' ? 'sale' : 'rental') +
+            ' enquiry - ' + building;
           form.hidden = false; doneEl.hidden = true; errEl.hidden = true;
           modal.hidden = false;
           document.body.classList.add('bldg-modal-open');
