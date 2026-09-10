@@ -518,20 +518,30 @@
     }
 
     function initContactLinks() {
-        var area = pageArea() || 'Dubai';
-        var verb = pageIntent() === 'sale' ? 'to buy' : 'for rent';
-
-        // Prefill every WhatsApp link with an area/intent message + reference.
+        // No WhatsApp message is prefilled. The visitor writes their own opening
+        // line. A message we put in their mouth reads as automated, and it is
+        // the first thing the broker sees.
+        //
+        // The click is still tracked exactly as before: the reference and
+        // visitor code are attached to the link element and to the
+        // whatsapp_clicked event, so the join happens on timestamp behind the
+        // scenes - which has been matching within 0.1 to 3.5 minutes.
+        var vcode = (snapshot() || {}).visitor_code || '';
         var waLinks = document.querySelectorAll('a[href*="wa.me"]');
         for (var i = 0; i < waLinks.length; i++) {
             (function (link) {
-                var ref = newCode('W');
-                link.dataset.cwcRef = ref;
-                var base = link.href.split('?')[0];
-                var msg = "Hi, I'm enquiring about office space " + verb +
-                    ' in ' + area + '. [Ref: ' + ref + ']';
-                link.href = base + '?text=' + encodeURIComponent(msg);
+                link.dataset.cwcRef = newCode('W');
+                link.dataset.cwcVisitor = vcode;
+                // Strip any query so the chat opens with an empty message box.
+                link.href = link.href.split('?')[0];
             })(waLinks[i]);
+        }
+
+        // Same for tel: links - nothing can be prefilled into a phone call, but
+        // recording which link was used keeps the click comparable to WhatsApp.
+        var telLinks = document.querySelectorAll('a[href^="tel:"]');
+        for (var t = 0; t < telLinks.length; t++) {
+            telLinks[t].dataset.cwcVisitor = vcode;
         }
 
         document.addEventListener('click', function (e) {
