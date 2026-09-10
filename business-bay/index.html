@@ -72,6 +72,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -489,6 +490,7 @@
 
 
 
+
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
                     <p class="kicker" data-copy="sectionKicker">Business Bay Leasing Advantages</p>
@@ -690,6 +692,7 @@
 
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -863,12 +866,27 @@
           var consent = form.querySelector('[name="consent"]');
 
           var raw = (mobEl.value || '').trim();
-          var digits = raw.replace(/[^0-9]/g, '');
-          // E.164 where the library is available; digits-only fallback otherwise.
-          var phoneValid = iti ? iti.isValidNumber()
-                               : (digits.length >= 7 && digits.length <= 15);
-          var phone = (iti && phoneValid) ? iti.getNumber()
-                                          : (digits ? '+' + digits : '');
+          // Fallback used only if the intl-tel-input CDN fails. Prepending '+'
+          // to stripped digits was wrong: it accepted letters, and turned
+          // 0501234567 into +0501234567 and 501234567 into +501234567.
+          // This parses conservatively and rejects anything it cannot resolve.
+          function fallbackE164(v) {
+            if (/[A-Za-z]/.test(v)) return '';            // letters are never a number
+            var t = v.replace(/[\s()\-.]/g, '');
+            if (t.indexOf('00') === 0) t = '+' + t.slice(2);
+            var d = t.replace(/[^0-9]/g, '');
+            if (t.charAt(0) === '+') {
+              return /^[1-9]\d{7,14}$/.test(d) ? '+' + d : '';
+            }
+            // UAE local forms, the primary market for these pages
+            if (/^0(5\d{8})$/.test(d)) return '+971' + d.slice(1);   // 05XXXXXXXX
+            if (/^(5\d{8})$/.test(d))  return '+971' + d;            // 5XXXXXXXX
+            if (/^0([2-9]\d{7})$/.test(d)) return '+971' + d.slice(1); // landline
+            return '';                                    // ask for a country code
+          }
+          var fb = iti ? '' : fallbackE164(raw);
+          var phoneValid = iti ? iti.isValidNumber() : !!fb;
+          var phone = iti ? (phoneValid ? iti.getNumber() : '') : fb;
           var mail = (mailEl.value || '').trim();
 
           var bad = [];
