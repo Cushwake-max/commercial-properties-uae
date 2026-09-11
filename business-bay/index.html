@@ -76,6 +76,7 @@
 
 
 
+
     <style id="availability-styles">
       .availability-section { padding: 64px 0; background: #F8F9FA; }
       .availability-inner { width: min(1180px, 92vw); margin: 0 auto; }
@@ -497,6 +498,7 @@
 
 
 
+
             <section class="intent-summary" id="advantages" aria-labelledby="advantages-title">
                 <div class="intent-summary-heading">
                     <p class="kicker" data-copy="sectionKicker">Business Bay Leasing Advantages</p>
@@ -702,6 +704,7 @@
 
 
 
+
         <div class="bldg-modal" id="bldgModal" hidden>
           <div class="bldg-modal__backdrop" data-close></div>
           <div class="bldg-modal__panel" role="dialog" aria-modal="true"
@@ -772,13 +775,37 @@
         // Each modal opening gets a token; only that opening may be replaced
         // by its own response.
         var openToken = 0;
-        // F2-R1: an unresolved submission belongs to the ENQUIRY, not to the
+        // F2-R1/R3: an unresolved submission belongs to the ENQUIRY, not to the
         // modal opening. Closing and reopening the same building must not hand
         // back a Send button while its first request is still unaccounted for.
-        var unresolved = {};   // building -> { lead_code, reason }
+        //
+        // F2-R3: this used to be written only in the timeout and error
+        // handlers, so between clicking Send and the 20s timer there was no
+        // lock at all - close and reopen inside that window and a second click
+        // created a second enquiry. The entry is now created BEFORE fetch.
+        //
+        // Each entry carries a request id. A response may only clear or change
+        // the entry it created: keyed on building alone, a late response could
+        // release a lock belonging to a different, still-pending request.
+        var pending = {};      // building -> { rid, lead_code, state, reason }
+        var reqSeq = 0;
         var UNKNOWN_MSG = 'We have not been able to confirm this enquiry. We may ' +
           'already have it - please call +971 4 245 2100 or use WhatsApp rather ' +
           'than sending again.';
+        var SENDING_MSG = 'Your enquiry is still being sent. Please give it a ' +
+          'moment rather than sending it again.';
+
+        // Does this request still own what the visitor is looking at? True for
+        // the opening that submitted, and for a later opening of the SAME
+        // building that is still locked to this same request - that visitor is
+        // watching this enquiry and must see how it ends. False when the modal
+        // has moved to another building or to a genuinely new enquiry, whose
+        // draft must never be overwritten.
+        function ownsView(building, rid, myToken) {
+          if (openToken === myToken) { return true; }
+          return !modal.hidden && openBuilding === building &&
+                 !!pending[building] && pending[building].rid === rid;
+        }
 
         var AREA = 'Business Bay';
         // F3: reuse the page's own intl-tel-input so the modal validates and
@@ -821,11 +848,16 @@
             ' enquiry - ' + building;
           form.hidden = false; head.hidden = false;
           doneEl.hidden = true; errEl.hidden = true;
-          // A different building starts clean; a building with an unresolved
-          // submission stays locked, however the visitor got back here.
+          // A different building starts clean; a building whose request has
+          // not been confirmed delivered stays locked, however the visitor got
+          // back here and whether or not the timer has fired yet.
           var sb = form.querySelector('.bldg-modal__submit');
           if (sb) {
-            if (unresolved[building]) {
+            var p = pending[building];
+            if (p && p.state === 'pending') {
+              sb.disabled = true; sb.textContent = 'Sending...';
+              errEl.textContent = SENDING_MSG; errEl.hidden = false;
+            } else if (p) {
               sb.disabled = true; sb.textContent = 'Awaiting confirmation';
               errEl.textContent = UNKNOWN_MSG; errEl.hidden = false;
             } else {
@@ -940,7 +972,8 @@
           // F2: bind this submission to THIS opening, not merely to the building.
           var building = openBuilding;
           var myToken = openToken;
-          pendingToken = myToken;
+          var myRid = ++reqSeq;      // allocated here so no async handler can
+                                     // run before this request has an identity
           var btn = form.querySelector('.bldg-modal__submit');
           btn.disabled = true; btn.textContent = 'Sending...';
           // F2 recovery: a request that never settles otherwise leaves Send
@@ -954,12 +987,15 @@
           var timer = setTimeout(function () {
             if (tracked) return;
             timedOut = true;
-            unresolved[building] = { lead_code: leadCode, reason: 'timeout' };
+            if (pending[building] && pending[building].rid === myRid) {
+              pending[building].state = 'unknown';
+              pending[building].reason = 'timeout';
+            }
             track('form_submission_timeout', {
               building: building, form_id: 'building_modal', lead_code: leadCode,
               delivery: 'unknown'
             });
-            if (openToken === myToken) {
+            if (ownsView(building, myRid, myToken)) {
               errEl.textContent = 'This is taking longer than expected. We may ' +
                 'already have your enquiry - please call +971 4 245 2100 or use ' +
                 'WhatsApp rather than sending again.';
@@ -979,6 +1015,13 @@
           var fd = new FormData(form);
           fd.set('mobile', phone);
           fd.set('building_enquired', building);
+
+          // F2-R3: the lock exists from the moment the request leaves, not
+          // from the moment it is declared late. Closing and reopening this
+          // building now finds a pending entry and keeps Send disabled.
+          pending[building] = {
+            rid: myRid, lead_code: leadCode, state: 'pending', reason: ''
+          };
 
           fetch(form.action, {
             method: 'POST', body: fd, headers: { 'Accept': 'application/json' }
@@ -1005,9 +1048,16 @@
               fbq('track', 'Lead', { content_name: AREA, content_category: intent() });
             }
 
-            delete unresolved[building];   // confirmed delivered
-            // A late success is still a success: replace the timeout notice.
-            if (openToken === myToken) {
+            // Only a 2xx clears the lock, and only for the request that set
+            // it - a later enquiry for the same building owns its own entry.
+            var paint = ownsView(building, myRid, myToken);
+            if (pending[building] && pending[building].rid === myRid) {
+              delete pending[building];
+            }
+            // F2-R4: a late success must also reach a visitor who closed and
+            // reopened this same enquiry. Previously the openToken test left
+            // them on 'Awaiting confirmation' for an enquiry that had landed.
+            if (paint) {
               errEl.hidden = true;
               form.hidden = true; head.hidden = true; doneEl.hidden = false;
             }
@@ -1019,16 +1069,16 @@
             // failure before or after the server accepted it. Only a 2xx proves
             // delivery, so every other outcome is UNKNOWN and none of them may
             // offer a retry control.
-            unresolved[building] = {
-              lead_code: leadCode,
-              reason: (err && err.message) || 'transport_error'
-            };
+            if (pending[building] && pending[building].rid === myRid) {
+              pending[building].state = 'unknown';
+              pending[building].reason = (err && err.message) || 'transport_error';
+            }
             track('form_submission_failed', {
               building: building, form_id: 'building_modal', lead_code: leadCode,
               delivery: 'unknown',
               failure_reason: (err && err.message) || 'transport_error'
             });
-            if (openToken === myToken) {
+            if (ownsView(building, myRid, myToken)) {
               errEl.textContent = UNKNOWN_MSG;
               errEl.hidden = false;
               btn.disabled = true; btn.textContent = 'Awaiting confirmation';
